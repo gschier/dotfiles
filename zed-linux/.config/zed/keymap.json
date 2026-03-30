@@ -60,5 +60,16 @@
     "bindings": {
       "ctrl-?": "workspace::ToggleRightDock"
     }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-shift-r": [
+        "task::Spawn",
+        {
+          "reveal_target": "dock"
+        }
+      ]
+    }
   }
 ]

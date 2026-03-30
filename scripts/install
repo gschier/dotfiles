@@ -6,6 +6,7 @@ packages=(
   hypr
   nvim
   waybar
+  zed-projects
   zed-linux
 )
 cd "$(dirname "$0")/.."

@@ -12,6 +12,7 @@ Current starter packages:
 - `hypr`
 - `nvim`
 - `waybar`
+- `zed-projects`
 - `zed-linux`
 - `zed-macos`
 

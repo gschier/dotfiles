@@ -1,0 +1,37 @@
+[
+  {
+    "label": "Develop",
+    "command": "npm run app-dev -- --config ./crates-tauri/yaak-app/tauri.release.conf.json $([ -f ./crates-tauri/yaak-app/tauri.worktree.conf.json ] && echo '--config ./crates-tauri/yaak-app/tauri.worktree.conf.json')",
+    "cwd": "/home/gschier/Workspace/yaak",
+    "use_new_terminal": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Develop Client",
+    "command": "npm run client:dev -- --config ./crates-tauri/yaak-app-client/tauri.release.conf.json $([ -f ./crates-tauri/yaak-app-client/tauri.worktree.conf.json ] && echo '--config ./crates-tauri/yaak-app-client/tauri.worktree.conf.json')",
+    "cwd": "/home/gschier/Workspace/yaak",
+    "use_new_terminal": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Develop Proxy",
+    "command": "npm run proxy:dev -- --config ./crates-tauri/yaak-app-proxy/tauri.release.conf.json $([ -f ./crates-tauri/yaak-app-proxy/tauri.worktree.conf.json ] && echo '--config ./crates-tauri/yaak-app-proxy/tauri.worktree.conf.json')",
+    "cwd": "/home/gschier/Workspace/yaak",
+    "use_new_terminal": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Bootstrap",
+    "command": "npm run bootstrap",
+    "cwd": "/home/gschier/Workspace/yaak",
+    "use_new_terminal": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Generate TS Types",
+    "command": "cargo test --manifest-path crates-tauri/yaak-app/Cargo.toml --all",
+    "cwd": "/home/gschier/Workspace/yaak",
+    "use_new_terminal": false,
+    "reveal": "always"
+  }
+]
