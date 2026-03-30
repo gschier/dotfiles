@@ -1,0 +1,14 @@
+[Unit]
+Description=SwayOSD server
+Documentation=https://github.com/ErikReider/SwayOSD
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/swayosd-server
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

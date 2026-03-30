@@ -5,6 +5,7 @@ set -euo pipefail
 packages=(
   hypr
   nvim
+  systemd-user
   waybar
   zed-projects
   zed-linux

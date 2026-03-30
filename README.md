@@ -11,6 +11,7 @@ Current starter packages:
 
 - `hypr`
 - `nvim`
+- `systemd-user`
 - `waybar`
 - `zed-projects`
 - `zed-linux`
@@ -21,6 +22,7 @@ Example:
 ```text
 nvim/.config/nvim/
 hypr/.config/hypr/
+systemd-user/.config/systemd/user/
 ```
 
 ## Install stow
