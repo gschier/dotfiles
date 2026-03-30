@@ -1,0 +1,64 @@
+[
+  {
+    "bindings": {
+      "cmd-!": "pane::RevealInProjectPanel",
+      "cmd-E": "tab_switcher::ToggleAll"
+    }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "cmd-r": "task::Rerun",
+      "shift-enter": ["terminal::SendText", "\u001b\r"]
+    }
+  },
+  {
+    "context": "VimControl && !menu",
+    "bindings": {
+      "e": "vim::Up",
+      "n": "vim::Down",
+      "i": "vim::Right",
+      "shift-n": "vim::JoinLines",
+      "shift-j": "search::SelectPreviousMatch",
+      "s": "vim::InsertBefore",
+      "j": "search::SelectNextMatch",
+      "space": "vim::InsertBefore"
+    }
+  },
+  {
+    "context": "vim_mode == normal",
+    "bindings": {
+      "space f f": "file_finder::Toggle",
+      "space f b": "tab_switcher::Toggle",
+      "space e": "editor::GoToDiagnostic",
+      "space E": "editor::GoToPreviousDiagnostic",
+      "g f f": "editor::Format",
+      "g c c": "editor::ToggleComments",
+      "g a": "editor::ToggleCodeActions"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-j": "editor::Hover"
+    }
+  },
+  {
+    "context": "Editor && !Terminal",
+    "bindings": {
+      "cmd-shift-space": "terminal_panel::ToggleFocus"
+    }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "cmd-shift-space": "terminal_panel::Toggle"
+    }
+  },
+  {
+    "context": "AgentPanel",
+    "bindings": {
+      "cmd-?": "workspace::ToggleRightDock"
+    }
+  }
+]

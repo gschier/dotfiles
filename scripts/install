@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+packages=(
+  hypr
+  nvim
+  waybar
+  zed-linux
+)
+cd "$(dirname "$0")/.."
+
+if ! command -v stow >/dev/null 2>&1; then
+  echo "stow is not installed" >&2
+  echo "Install it first, then rerun this script." >&2
+  exit 1
+fi
+
+stow --target="$HOME" "${packages[@]}"
