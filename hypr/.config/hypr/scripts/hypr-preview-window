@@ -1,0 +1,167 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+STATE_DIR="${XDG_RUNTIME_DIR:-/tmp}"
+STATE_FILE="$STATE_DIR/hypr-preview-window.json"
+SPECIAL_WORKSPACE="preview"
+WIDTH_PERCENT=70
+HEIGHT_PERCENT=78
+
+notify() {
+  local msg="$1"
+  hyprctl notify -1 2500 "rgb(88c0d0)" "$msg" >/dev/null 2>&1 || true
+}
+
+die() {
+  notify "$1"
+  exit 1
+}
+
+active_workspace() {
+  hyprctl monitors -j | jq -r '.[] | select(.focused == true) | .activeWorkspace.name'
+}
+
+active_window() {
+  hyprctl activewindow -j
+}
+
+marked_address() {
+  local workspace="$1"
+  jq -r --arg workspace "$workspace" '.[$workspace].address // empty' "$STATE_FILE" 2>/dev/null || true
+}
+
+window_json() {
+  local address="$1"
+  hyprctl clients -j | jq -c --arg address "$address" '.[] | select(.address == $address)'
+}
+
+apply_preview_geometry() {
+  local address="$1"
+  hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 || true
+  hyprctl dispatch setfloating "address:$address" >/dev/null 2>&1 || true
+  hyprctl dispatch resizewindowpixel "exact ${WIDTH_PERCENT}% ${HEIGHT_PERCENT}%,address:$address" >/dev/null 2>&1 || true
+  hyprctl dispatch centerwindow 1 >/dev/null 2>&1 || true
+}
+
+require_marked() {
+  local workspace="$1"
+  [[ -f "$STATE_FILE" ]] || die "No preview window marked for workspace $workspace"
+  local address
+  address="$(marked_address "$workspace")"
+  [[ -n "$address" ]] || die "No preview window marked for workspace $workspace"
+  printf '%s\n' "$address"
+}
+
+cmd_mark() {
+  local active
+  active="$(active_window)"
+
+  local address workspace floating class title existing
+  address="$(jq -r '.address // empty' <<<"$active")"
+  workspace="$(jq -r '.workspace.name // empty' <<<"$active")"
+  floating="$(jq -r '.floating // false' <<<"$active")"
+  class="$(jq -r '.class // empty' <<<"$active")"
+  title="$(jq -r '.title // empty' <<<"$active")"
+
+  [[ -n "$address" ]] || die "No active window to mark"
+
+  local state='{}'
+  [[ -f "$STATE_FILE" ]] && state="$(cat "$STATE_FILE")"
+  existing="$(jq -r --arg workspace "$workspace" '.[$workspace].address // empty' <<<"$state")"
+
+  if [[ "$existing" == "$address" ]]; then
+    if [[ "$floating" == "true" ]]; then
+      hyprctl dispatch settiled "address:$address" >/dev/null 2>&1 || true
+    fi
+    jq --arg workspace "$workspace" 'del(.[$workspace])' <<<"$state" > "$STATE_FILE"
+    if [[ "$(jq 'length' "$STATE_FILE")" -eq 0 ]]; then
+      rm -f "$STATE_FILE"
+    fi
+    notify "Preview unmarked for workspace $workspace"
+    return
+  fi
+
+  jq \
+    --arg workspace "$workspace" \
+    --arg address "$address" \
+    --arg class "$class" \
+    --arg title "$title" \
+    --argjson floating "$floating" \
+    '.[$workspace] = {
+      address: $address,
+      workspace: $workspace,
+      class: $class,
+      title: $title,
+      floating: $floating
+    }' <<<"$state" > "$STATE_FILE"
+
+  apply_preview_geometry "$address"
+  notify "Preview marked for workspace $workspace: ${class:-window}"
+}
+
+cmd_clear() {
+  local current_ws state
+  current_ws="$(active_workspace)"
+  [[ -f "$STATE_FILE" ]] || die "No preview window marked for workspace $current_ws"
+  state="$(cat "$STATE_FILE")"
+  jq --arg workspace "$current_ws" 'del(.[$workspace])' <<<"$state" > "$STATE_FILE"
+  if [[ "$(jq 'length' "$STATE_FILE")" -eq 0 ]]; then
+    rm -f "$STATE_FILE"
+  fi
+}
+
+cmd_toggle() {
+  local address client current_ws client_ws was_floating saved_ws
+  current_ws="$(active_workspace)"
+  address="$(require_marked "$current_ws")"
+  client="$(window_json "$address")"
+
+  [[ -n "$client" ]] || {
+    local state
+    state="$(cat "$STATE_FILE")"
+    jq --arg workspace "$current_ws" 'del(.[$workspace])' <<<"$state" > "$STATE_FILE"
+    if [[ "$(jq 'length' "$STATE_FILE")" -eq 0 ]]; then
+      rm -f "$STATE_FILE"
+    fi
+    die "Marked preview window no longer exists for workspace $current_ws"
+  }
+
+  client_ws="$(jq -r '.workspace.name // empty' <<<"$client")"
+  was_floating="$(jq -r --arg workspace "$current_ws" '.[$workspace].floating // false' "$STATE_FILE" 2>/dev/null || printf 'false')"
+  saved_ws="$(jq -r --arg workspace "$current_ws" '.[$workspace].workspace // empty' "$STATE_FILE" 2>/dev/null || true)"
+
+  if [[ "$client_ws" == "special:$SPECIAL_WORKSPACE" ]]; then
+    hyprctl dispatch movetoworkspacesilent "name:${saved_ws:-$current_ws},address:$address" >/dev/null
+    if [[ "$was_floating" == "true" ]]; then
+      hyprctl dispatch setfloating "address:$address" >/dev/null 2>&1 || true
+    fi
+    apply_preview_geometry "$address"
+    hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 || true
+    jq --arg key "$current_ws" --arg workspace "${saved_ws:-$current_ws}" '.[$key].workspace = $workspace' "$STATE_FILE" > "${STATE_FILE}.tmp"
+    mv "${STATE_FILE}.tmp" "$STATE_FILE"
+    return
+  fi
+
+  jq --arg key "$current_ws" --arg workspace "${client_ws:-$saved_ws}" '.[$key].workspace = $workspace' "$STATE_FILE" > "${STATE_FILE}.tmp"
+  mv "${STATE_FILE}.tmp" "$STATE_FILE"
+  hyprctl dispatch movetoworkspacesilent "special:$SPECIAL_WORKSPACE,address:$address" >/dev/null
+}
+
+case "${1:-}" in
+  mark)
+    cmd_mark
+    ;;
+  clear)
+    cmd_clear
+    ;;
+  toggle)
+    cmd_toggle
+    ;;
+  *)
+    cat <<'EOF'
+Usage: hypr-preview-window <mark|toggle|clear>
+EOF
+    exit 1
+    ;;
+esac
