@@ -2,15 +2,15 @@
   {
     "bindings": {
       "ctrl-!": "pane::RevealInProjectPanel",
-      "ctrl-E": "tab_switcher::ToggleAll"
-    }
+      "ctrl-E": "tab_switcher::ToggleAll",
+    },
   },
   {
     "context": "Terminal",
     "bindings": {
-      "ctrl-r": "task::Rerun",
-      "shift-enter": ["terminal::SendText", "\u001b\r"]
-    }
+      "ctrl-shift-r": "task::Rerun",
+      "shift-enter": ["terminal::SendText", "\u001b\r"],
+    },
   },
   {
     "context": "VimControl && !menu",
@@ -22,8 +22,8 @@
       "shift-j": "search::SelectPreviousMatch",
       "s": "vim::InsertBefore",
       "j": "search::SelectNextMatch",
-      "space": "vim::InsertBefore"
-    }
+      "space": "vim::InsertBefore",
+    },
   },
   {
     "context": "vim_mode == normal",
@@ -34,32 +34,32 @@
       "space E": "editor::GoToPreviousDiagnostic",
       "g f f": "editor::Format",
       "g c c": "editor::ToggleComments",
-      "g a": "editor::ToggleCodeActions"
-    }
+      "g a": "editor::ToggleCodeActions",
+    },
   },
   {
     "context": "Editor",
     "bindings": {
-      "ctrl-j": "editor::Hover"
-    }
+      "ctrl-j": "editor::Hover",
+    },
   },
   {
     "context": "Editor && !Terminal",
     "bindings": {
-      "ctrl-shift-space": "terminal_panel::ToggleFocus"
-    }
+      "ctrl-shift-space": "terminal_panel::ToggleFocus",
+    },
   },
   {
     "context": "Terminal",
     "bindings": {
-      "ctrl-shift-space": "terminal_panel::Toggle"
-    }
+      "ctrl-shift-space": "terminal_panel::Toggle",
+    },
   },
   {
     "context": "AgentPanel",
     "bindings": {
-      "ctrl-?": "workspace::ToggleRightDock"
-    }
+      "ctrl-?": "workspace::ToggleRightDock",
+    },
   },
   {
     "context": "Workspace",
@@ -67,9 +67,9 @@
       "alt-shift-r": [
         "task::Spawn",
         {
-          "reveal_target": "dock"
-        }
-      ]
-    }
-  }
+          "reveal_target": "dock",
+        },
+      ],
+    },
+  },
 ]
