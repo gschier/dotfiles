@@ -1,6 +1,8 @@
 [
   {
     "bindings": {
+      "super-[": "pane::GoBack",
+      "super-]": "pane::GoForward",
       "ctrl-!": "pane::RevealInProjectPanel",
       "ctrl-E": "tab_switcher::ToggleAll",
     },
@@ -44,7 +46,7 @@
     },
   },
   {
-    "context": "Editor && !Terminal",
+    "context": "!Terminal",
     "bindings": {
       "ctrl-shift-space": "terminal_panel::ToggleFocus",
     },

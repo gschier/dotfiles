@@ -8,7 +8,7 @@
 // from the command palette or from `Zed` application menu.
 {
   "edit_predictions": {
-    "provider": "zed",
+    "provider": "copilot",
   },
   "git_panel": {
     "tree_view": true,
@@ -30,10 +30,15 @@
       "type": "registry",
     },
     "codex-acp": {
+      "default_config_options": {
+        "mode": "bypassPermissions",
+        "approval_policy": "never",
+        "sandbox_mode": "danger-full-access",
+        "reasoning_effort": "high",
+      },
       "type": "registry",
     },
   },
-  "icon_theme": "Catppuccin Mocha",
   "git": {
     "inline_blame": {
       "show_commit_summary": true,
@@ -52,13 +57,12 @@
   "buffer_font_weight": 400.0,
   "agent": {
     "message_editor_min_lines": 3,
-    "notify_when_agent_waiting": "all_screens",
+    "notify_when_agent_waiting": "never",
     "play_sound_when_agent_done": true,
     "inline_assistant_model": {
       "provider": "copilot_chat",
       "model": "gpt-5-mini",
     },
-    "model_parameters": [],
   },
   "lsp": {
     "vtsls": {
@@ -78,15 +82,15 @@
     },
   },
   "theme": {
-    "mode": "system",
+    "mode": "dark",
     "light": "Fleet Light",
-    "dark": "Fleet Dark Purple",
+    "dark": "Aether",
   },
   "vim_mode": true,
   "ui_font_size": 14.0,
   "buffer_font_size": 12.0,
-  "ui_font_family": "SF Pro",
-  "buffer_font_family": "JetBrains Mono",
+  "ui_font_family": "JetBrainsMono Nerd Font Mono",
+  "buffer_font_family": "JetBrainsMono Nerd Font Mono",
   "tab_bar": {
     "show": false,
   },
