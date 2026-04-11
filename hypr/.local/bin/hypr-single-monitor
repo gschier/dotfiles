@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+
+import json
+import subprocess
+import time
+
+
+INTERNAL = "eDP-1"
+INTERNAL_RULE = "eDP-1,preferred,auto,2"
+EXTERNAL_RULE = "preferred,auto,auto"
+POLL_SECONDS = 1
+STABLE_POLLS = 2
+RESTART_COOLDOWN_SECONDS = 15
+
+
+def run(*args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(args, check=False, text=True, capture_output=True)
+
+
+def get_monitors() -> list[dict]:
+    result = run("hyprctl", "-j", "monitors", "all")
+    if result.returncode != 0:
+        return []
+    try:
+        return json.loads(result.stdout)
+    except json.JSONDecodeError:
+        return []
+
+
+def has_external(monitors: list[dict]) -> bool:
+    for monitor in monitors:
+        if monitor.get("name") != INTERNAL and not monitor.get("disabled", False):
+            return True
+    return False
+
+
+def get_disabled_external(monitors: list[dict]) -> str | None:
+    for monitor in monitors:
+        if monitor.get("name") != INTERNAL and monitor.get("disabled", False):
+            return monitor.get("name")
+    return None
+
+
+def is_internal_disabled(monitors: list[dict]) -> bool:
+    for monitor in monitors:
+        if monitor.get("name") == INTERNAL:
+            return monitor.get("disabled", False)
+    return True
+
+
+def apply_monitor_rule(rule: str) -> None:
+    run("hyprctl", "keyword", "monitor", rule)
+
+
+def restart_waybar() -> None:
+    run("omarchy-restart-waybar")
+
+
+def desired_action(monitors: list[dict]) -> tuple[str, str] | None:
+    external_present = has_external(monitors)
+    disabled_external = get_disabled_external(monitors)
+    internal_disabled = is_internal_disabled(monitors)
+
+    if disabled_external:
+        return ("enable_external", f"{disabled_external},{EXTERNAL_RULE}")
+    if external_present and not internal_disabled:
+        return ("disable_internal", f"{INTERNAL},disable")
+    if not external_present and internal_disabled:
+        return ("enable_internal", INTERNAL_RULE)
+    return None
+
+
+def enforce(stable_action: tuple[str, str] | None, last_restart_at: float) -> float:
+    if stable_action is None:
+        return last_restart_at
+
+    _action, rule = stable_action
+    apply_monitor_rule(rule)
+
+    now = time.monotonic()
+    if now - last_restart_at >= RESTART_COOLDOWN_SECONDS:
+        restart_waybar()
+        return now
+
+    return last_restart_at
+
+
+def main() -> None:
+    last_action: tuple[str, str] | None = None
+    stable_count = 0
+    last_restart_at = 0.0
+
+    while True:
+        monitors = get_monitors()
+        action = desired_action(monitors) if monitors else None
+
+        if action == last_action:
+            stable_count += 1
+        else:
+            last_action = action
+            stable_count = 1 if action else 0
+
+        if stable_count >= STABLE_POLLS:
+            last_restart_at = enforce(action, last_restart_at)
+            stable_count = 0
+            last_action = None
+
+        time.sleep(POLL_SECONDS)
+
+
+if __name__ == "__main__":
+    main()
