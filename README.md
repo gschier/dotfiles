@@ -10,6 +10,7 @@ their final location under `$HOME`.
 Current starter packages:
 
 - `hypr`
+- `niri`
 - `nvim`
 - `systemd-user`
 - `waybar`
@@ -22,6 +23,7 @@ Example:
 ```text
 nvim/.config/nvim/
 hypr/.config/hypr/
+niri/.config/niri/
 systemd-user/.config/systemd/user/
 ```
 
