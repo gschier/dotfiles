@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+expected_repo_dir="$HOME/Workspace/dotfiles"
+
+if [[ "$repo_dir" != "$expected_repo_dir" || ! -d "$repo_dir/.git" ]]; then
+	echo "Run this from a dotfiles checkout at $expected_repo_dir." >&2
+	echo >&2
+	echo "Bootstrap with:" >&2
+	echo "  sudo dnf install -y git" >&2
+	echo "  mkdir -p ~/Workspace" >&2
+	echo "  git clone https://github.com/gschier/dotfiles.git ~/Workspace/dotfiles" >&2
+	echo "  cd ~/Workspace/dotfiles" >&2
+	echo "  ./scripts/install-fedora-niri" >&2
+	exit 1
+fi
+
+install_pkg() {
+	if ! rpm -q "$1" >/dev/null 2>&1; then
+		echo "Installing $1"
+		sudo dnf install -y "$1"
+	else
+		echo "Already installed $1"
+	fi
+}
+
+install_cmd() {
+	local check_bin="$1"
+	shift
+
+	if ! command -v "$check_bin" >/dev/null 2>&1; then
+		echo "Installing $check_bin..."
+		"$@"
+	else
+		echo "Already installed $check_bin"
+	fi
+}
+
+install_packer() {
+	local packer_dir="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
+
+	if [[ ! -d "$packer_dir/.git" ]]; then
+		echo "Installing packer.nvim..."
+		git clone --depth 1 https://github.com/wbthomason/packer.nvim "$packer_dir"
+	else
+		echo "Already installed packer.nvim"
+	fi
+}
+
+echo "Updating dependencies..."
+sudo dnf update -y
+
+echo "Creating ~/Workspace..."
+mkdir -p ~/Workspace
+
+echo "Installing dependencies..."
+install_pkg niri
+install_pkg greetd
+install_pkg tuigreet
+install_pkg gnome-keyring
+install_pkg curl
+install_pkg gcc
+install_pkg git
+install_pkg make
+install_pkg neovim
+install_pkg stow
+
+echo "Linking dotfiles..."
+"$repo_dir/scripts/install"
+
+install_packer
+
+echo "Syncing Neovim plugins..."
+nvim --headless -u NONE \
+	-c 'packadd packer.nvim' \
+	-c "luafile $repo_dir/nvim/.config/nvim/lua/gschier/packer.lua" \
+	-c 'autocmd User PackerComplete quitall' \
+	-c 'PackerSync'
+
+echo "Enabling graphical boot..."
+sudo systemctl set-default graphical.target
+
+echo "Setting up greetd..."
+sudo tee /etc/greetd/config.toml >/dev/null <<'EOF'
+[terminal]
+vt = 1
+[default_session]
+command = "tuigreet --time --remember --cmd niri"
+user = "greetd"
+EOF
+sudo systemctl enable greetd
+
+install_cmd vp \
+	bash -c 'curl -fsSL https://vite.plus | VP_NODE_MANAGER=yes bash'
+install_cmd google-chrome \
+	sudo dnf install https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+install_cmd codex \
+	bash -c 'vp install -g @openai/codex'
+install_cmd zed \
+	bash -c 'curl -f https://zed.dev/install.sh | sh'
+
+echo "Setup Complete"

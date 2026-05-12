@@ -41,6 +41,16 @@ From this repo:
 ./scripts/install
 ```
 
+To provision a Fedora machine that boots into Niri:
+
+```bash
+sudo dnf install -y git
+mkdir -p ~/Workspace
+git clone https://github.com/gschier/dotfiles.git ~/Workspace/dotfiles
+cd ~/Workspace/dotfiles
+./scripts/install-fedora-niri
+```
+
 Or install selected packages manually:
 
 ```bash
