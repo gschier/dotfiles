@@ -13,9 +13,15 @@
   "commandRunner": {
     "enabled": true,
     "history": [
+      "zed -n ~/Workspace/yaak",
+      "zed ~/Workspace/yaak",
+      "zed ~/Workspace/yaak-web",
       "dms ipc lock lock",
       "dms restart",
       "echo \"foo\""
     ]
+  },
+  "studioBrightness": {
+    "enabled": true
   }
 }

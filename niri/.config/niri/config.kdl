@@ -135,7 +135,7 @@ layout {
     // preset-window-heights { }
 
     // You can change the default width of the new windows.
-    default-column-width { proportion 0.75; }
+    default-column-width { proportion 0.45; }
     // If you leave the brackets empty, the windows themselves will decide their initial width.
     // default-column-width {}
 
@@ -284,7 +284,7 @@ prefer-no-csd
 // You can change the path where screenshots are saved.
 // A ~ at the front will be expanded to the home directory.
 // The path is formatted with strftime(3) to give you the screenshot date and time.
-screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
 
 // You can also set this to null to disable saving screenshots to disk.
 // screenshot-path null
@@ -393,11 +393,10 @@ binds {
     XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
     XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
 
-    // Example brightness key mappings for brightnessctl.
-    // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
-    // but you need to manually put each argument in separate "" quotes.
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn "/home/gschier/.local/bin/display-brightness" "up" "10"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "/home/gschier/.local/bin/display-brightness" "down" "10"; }
+    XF86Launch6 allow-when-locked=true { spawn "/home/gschier/.local/bin/display-brightness" "up" "10"; }
+    XF86Launch5 allow-when-locked=true { spawn "/home/gschier/.local/bin/display-brightness" "down" "10"; }
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
@@ -663,3 +662,6 @@ include "dms/windowrules.kdl"
 include "dms/colors.kdl"
 
 include "dms/layout.kdl"
+include "dms/binds.kdl"
+
+include "dms/outputs.kdl"

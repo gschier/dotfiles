@@ -127,6 +127,89 @@ EOF
 	fi
 }
 
+install_docker() {
+	echo "Installing Docker and Compose..."
+	install_pkg moby-engine
+	install_pkg docker-compose
+
+	sudo systemctl enable --now docker
+
+	sudo groupadd -f docker
+	if ! id -nG "$USER" | grep -qw docker; then
+		echo "Adding $USER to docker group..."
+		sudo usermod -aG docker "$USER"
+		echo "Run 'newgrp docker' to use Docker in this terminal without logging out."
+	else
+		echo "Already in docker group"
+	fi
+}
+
+install_asdbctl_udev_rule() {
+	local rules_file="/etc/udev/rules.d/70-apple-studio-display.rules"
+	local rules_content='SUBSYSTEM=="hidraw", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="1118", TAG+="uaccess"'
+
+	if [[ ! -f "$rules_file" ]] || ! sudo grep -Fxq "$rules_content" "$rules_file"; then
+		echo "Installing Apple Studio Display udev rule..."
+		printf '%s\n' "$rules_content" | sudo tee "$rules_file" >/dev/null
+		sudo udevadm control --reload-rules
+		sudo udevadm trigger --subsystem-match=hidraw
+	else
+		echo "Already installed Apple Studio Display udev rule"
+	fi
+}
+
+install_asdbctl() {
+	local asdbctl_dir="$HOME/Workspace/asdbctl"
+
+	install_asdbctl_udev_rule
+
+	if command -v asdbctl >/dev/null 2>&1; then
+		echo "Already installed asdbctl"
+		return
+	fi
+
+	install_pkg hidapi-devel
+	install_pkg pkgconf-pkg-config
+	install_pkg systemd-devel
+
+	# Make cargo available in this non-interactive install script immediately after rustup install.
+	# shellcheck source=/dev/null
+	source "$HOME/.cargo/env"
+
+	if [[ ! -d "$asdbctl_dir/.git" ]]; then
+		echo "Cloning asdbctl..."
+		git clone https://github.com/juliuszint/asdbctl.git "$asdbctl_dir"
+	else
+		echo "Already cloned asdbctl"
+	fi
+
+	echo "Building asdbctl..."
+	cargo build --release --manifest-path "$asdbctl_dir/Cargo.toml"
+	sudo install -Dm755 "$asdbctl_dir/target/release/asdbctl" /usr/local/bin/asdbctl
+}
+
+install_development_dependencies() {
+	echo "Installing development dependencies..."
+
+	# Tauri's Fedora prerequisites for Linux desktop app development.
+	sudo dnf group install -y "c-development"
+	install_pkg file
+	install_pkg libappindicator-gtk3-devel
+	install_pkg librsvg2-devel
+	install_pkg libxdo-devel
+	install_pkg openssl-devel
+	install_pkg webkit2gtk4.1-devel
+
+	# Rust native crates used by Yaak and other local tools.
+	install_pkg cmake
+	install_pkg expat-devel
+	install_pkg pkgconf-pkg-config
+
+	# Yaak vendors OpenSSL on Linux, which builds OpenSSL from source.
+	install_pkg perl-FindBin
+	install_pkg perl-IPC-Cmd
+}
+
 install_system_dconf() {
 	echo "Installing system dconf defaults..."
 	sudo install -Dm644 \
@@ -153,10 +236,17 @@ install_pkg curl
 install_pkg gcc
 install_pkg git
 install_pkg gh
+install_pkg jq
 install_pkg make
 install_pkg neovim
 install_pkg stow
+install_pkg dbus-devel
 install_pkg flatpak
+install_pkg wget
+install_docker
+install_development_dependencies
+install_cmd rustup \
+	bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
 install_dms
 install_dms_plugin calculator
 
@@ -194,8 +284,11 @@ install_cmd codex \
 	bash -c 'vp install -g @openai/codex'
 install_cmd zed \
 	bash -c 'curl -f https://zed.dev/install.sh | sh'
+install_cmd railway \
+	bash -c 'bash <(curl -fsSL cli.new)'
 install_1password
 install_stripe
+install_asdbctl
 install_flatpak_app org.telegram.desktop "Telegram Desktop"
 
 echo "Setup Complete"

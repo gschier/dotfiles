@@ -1,0 +1,204 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/DankMaterialShell"
+state_file="$state_dir/display-brightness.json"
+default_step=10
+
+usage() {
+	echo "Usage: display-brightness <up|down|set|status> [value] [focused|laptop|studio|all]" >&2
+	exit 2
+}
+
+clamp_percent() {
+	local value="$1"
+	if ((value < 1)); then
+		echo 1
+	elif ((value > 100)); then
+		echo 100
+	else
+		echo "$value"
+	fi
+}
+
+focused_output_json() {
+	niri msg -j focused-output 2>/dev/null || printf '{}'
+}
+
+focused_output_name() {
+	focused_output_json | jq -r '.name // ""'
+}
+
+focused_target() {
+	focused_output_json | jq -r '
+		if ((.make // "") | test("Apple"; "i")) and ((.model // "") | test("StudioDisplay|Studio Display"; "i")) then
+			"studio"
+		else
+			"laptop"
+		end
+	'
+}
+
+laptop_device() {
+	dms brightness list | awk '$1 ~ /^backlight:/ { print $1; exit }'
+}
+
+laptop_active() {
+	niri msg -j outputs 2>/dev/null | jq -e '."eDP-1".logical != null' >/dev/null
+}
+
+studio_active() {
+	niri msg -j outputs 2>/dev/null | jq -e '
+		[.[] | select(
+			.logical != null
+			and ((.make // "") | test("Apple"; "i"))
+			and ((.model // "") | test("StudioDisplay|Studio Display"; "i"))
+		)] | length > 0
+	' >/dev/null
+}
+
+laptop_get() {
+	laptop_active || return 1
+
+	local device
+	device="$(laptop_device)"
+	[[ -n "$device" ]] || return 1
+	dms brightness get "$device" | sed -n 's/.*: \([0-9]\+\)%.*/\1/p'
+}
+
+laptop_set() {
+	local percent="$1"
+
+	laptop_active || return 1
+
+	local device
+	device="$(laptop_device)"
+	[[ -n "$device" ]] || return 1
+	dms ipc call brightness set "$percent" "$device" >/dev/null
+}
+
+studio_get() {
+	studio_active || return 1
+	asdbctl get | awk '/brightness/ { print int($2); exit }'
+}
+
+studio_set() {
+	studio_active || return 1
+	asdbctl set "$1" >/dev/null
+}
+
+target_get() {
+	case "$1" in
+		laptop) laptop_get ;;
+		studio) studio_get ;;
+		*) return 1 ;;
+	esac
+}
+
+target_set() {
+	local target="$1"
+	local percent="$2"
+
+	case "$target" in
+		laptop) laptop_set "$percent" ;;
+		studio) studio_set "$percent" ;;
+		*) return 1 ;;
+	esac
+}
+
+write_state() {
+	local target="$1"
+	local value="$2"
+	local screen="${3:-}"
+	local state_tmp
+	local state_json
+
+	mkdir -p "$state_dir"
+	state_tmp="$(mktemp "$state_dir/display-brightness.XXXXXX")"
+	state_json="$(jq -n \
+		--arg target "$target" \
+		--arg screen "$screen" \
+		--argjson value "$value" \
+		--argjson sequence "$(date +%s%N)" \
+		'{
+			target: $target,
+			screen: $screen,
+			value: $value,
+			sequence: $sequence,
+			updatedAt: now
+		}')"
+	printf '%s\n' "$state_json" >"$state_tmp"
+	mv "$state_tmp" "$state_file"
+	printf '%s\n' "$state_json"
+}
+
+status_all() {
+	local laptop="" studio=""
+	laptop="$(laptop_get 2>/dev/null || true)"
+	studio="$(studio_get 2>/dev/null || true)"
+
+	jq -n \
+		--argjson laptop "${laptop:-null}" \
+		--argjson studio "${studio:-null}" \
+		'{laptop: $laptop, studio: $studio}'
+}
+
+action="${1:-}"
+[[ -n "$action" ]] || usage
+shift || true
+
+case "$action" in
+	up | down)
+		step="${1:-$default_step}"
+		target="${2:-focused}"
+		[[ "$step" =~ ^[0-9]+$ ]] || usage
+		;;
+	set)
+		value="${1:-}"
+		target="${2:-focused}"
+		[[ "$value" =~ ^[0-9]+$ ]] || usage
+		;;
+	status)
+		target="${1:-focused}"
+		;;
+	*)
+		usage
+		;;
+esac
+
+if [[ "${target:-}" == "focused" ]]; then
+	target="$(focused_target)"
+	screen="$(focused_output_name)"
+else
+	screen="$(focused_output_name)"
+fi
+
+case "$action" in
+	status)
+		if [[ "$target" == "all" ]]; then
+			status_all
+		else
+			value="$(target_get "$target")"
+			write_state "$target" "$value" "$screen"
+		fi
+		;;
+	set)
+		value="$(clamp_percent "$value")"
+		target_set "$target" "$value"
+		value="$(target_get "$target")"
+		write_state "$target" "$value" "$screen"
+		;;
+	up | down)
+		current="$(target_get "$target")"
+		if [[ "$action" == "up" ]]; then
+			value="$((current + step))"
+		else
+			value="$((current - step))"
+		fi
+		value="$(clamp_percent "$value")"
+		target_set "$target" "$value"
+		value="$(target_get "$target")"
+		write_state "$target" "$value" "$screen"
+		;;
+esac

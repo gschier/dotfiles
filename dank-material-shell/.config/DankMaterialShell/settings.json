@@ -7,7 +7,7 @@
   "runUserMatugenTemplates": true,
   "matugenTargetMonitor": "",
   "popupTransparency": 0.85,
-  "dockTransparency": 0.73,
+  "dockTransparency": 0.94,
   "widgetBackgroundColor": "sch",
   "widgetColorMode": "default",
   "controlCenterTileColorMode": "primary",
@@ -84,12 +84,17 @@
   "privacyShowScreenShareIcon": false,
   "controlCenterWidgets": [
     {
-      "id": "volumeSlider",
+      "id": "plugin_studioBrightness",
+      "enabled": true,
+      "width": 100
+    },
+    {
+      "id": "audioOutput",
       "enabled": true,
       "width": 50
     },
     {
-      "id": "brightnessSlider",
+      "id": "volumeSlider",
       "enabled": true,
       "width": 50
     },
@@ -100,11 +105,6 @@
     },
     {
       "id": "inputVolumeSlider",
-      "enabled": true,
-      "width": 50
-    },
-    {
-      "id": "audioOutput",
       "enabled": true,
       "width": 50
     },
@@ -349,12 +349,12 @@
   "dockAutoHide": false,
   "dockSmartAutoHide": true,
   "dockGroupByApp": true,
-  "dockOpenOnOverview": false,
-  "dockPosition": 1,
-  "dockSpacing": 10,
+  "dockOpenOnOverview": true,
+  "dockPosition": 2,
+  "dockSpacing": 8,
   "dockBottomGap": 0,
   "dockMargin": 0,
-  "dockIconSize": 48,
+  "dockIconSize": 43,
   "dockIndicatorStyle": "circle",
   "dockBorderEnabled": false,
   "dockBorderColor": "surfaceText",
@@ -410,12 +410,12 @@
   "osdPosition": 5,
   "osdVolumeEnabled": true,
   "osdMediaVolumeEnabled": true,
-  "osdMediaPlaybackEnabled": false,
-  "osdBrightnessEnabled": true,
+  "osdMediaPlaybackEnabled": true,
+  "osdBrightnessEnabled": false,
   "osdIdleInhibitorEnabled": true,
   "osdMicMuteEnabled": true,
   "osdCapsLockEnabled": true,
-  "osdPowerProfileEnabled": false,
+  "osdPowerProfileEnabled": true,
   "osdAudioOutputEnabled": true,
   "powerActionConfirm": true,
   "powerActionHoldDuration": 0.75,
@@ -439,10 +439,21 @@
   "updaterUseCustomCommand": false,
   "updaterCustomCommand": "",
   "updaterTerminalAdditionalParams": "",
-  "displayNameMode": "system",
+  "displayNameMode": "model",
   "screenPreferences": {},
   "showOnLastDisplay": {},
-  "niriOutputSettings": {},
+  "niriOutputSettings": {
+    "DP-4": {
+      "layout": {
+        "alwaysCenterSingleColumn": true
+      }
+    },
+    "eDP-1": {
+      "layout": {
+        "alwaysCenterSingleColumn": true
+      }
+    }
+  },
   "hyprlandOutputSettings": {},
   "displayProfiles": {},
   "activeDisplayProfile": {},
@@ -499,6 +510,10 @@
           "enabled": true
         },
         {
+          "id": "battery",
+          "enabled": true
+        },
+        {
           "id": "cpuUsage",
           "enabled": true,
           "minimumWidth": true
@@ -534,7 +549,7 @@
       "innerPadding": 4,
       "bottomGap": -14,
       "transparency": 0,
-      "widgetTransparency": 0.83,
+      "widgetTransparency": 0.69,
       "squareCorners": true,
       "noBackground": false,
       "maximizeWidgetIcons": false,
@@ -649,7 +664,7 @@
       "enabled": true
     },
     "dms_settings": {
-      "enabled": false
+      "enabled": true
     },
     "dms_notepad": {
       "enabled": false
