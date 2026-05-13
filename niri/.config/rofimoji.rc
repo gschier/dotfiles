@@ -1,0 +1,6 @@
+selector=wofi
+action=clipboard
+clipboarder=wl-copy
+typer=wtype
+prompt=Emoji
+selector-args=--style /home/gschier/.config/wofi/emoji.css --width 720 --height 420 --lines 10 --hide-scroll --gtk-dark --insensitive

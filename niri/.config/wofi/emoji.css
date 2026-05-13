@@ -1,0 +1,43 @@
+window {
+    margin: 0;
+    border: 1px solid rgba(147, 205, 246, 0.55);
+    border-radius: 12px;
+    background-color: rgba(16, 20, 23, 0.97);
+    font-family: "Inter", "Noto Sans", "Noto Color Emoji", sans-serif;
+    font-size: 18px;
+}
+
+#outer-box {
+    margin: 12px;
+    background-color: transparent;
+}
+
+#input {
+    min-height: 42px;
+    margin: 0 0 10px 0;
+    padding: 8px 12px;
+    border: 1px solid rgba(147, 205, 246, 0.35);
+    border-radius: 8px;
+    background-color: rgba(28, 32, 36, 0.98);
+    color: #f8fcff;
+}
+
+#inner-box {
+    background-color: transparent;
+}
+
+#entry {
+    min-height: 34px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    color: #dfe3e7;
+}
+
+#entry:selected {
+    background-color: rgba(147, 205, 246, 0.24);
+    color: #f8fcff;
+}
+
+#text {
+    color: inherit;
+}

@@ -370,6 +370,9 @@ binds {
     Mod+Space hotkey-overlay-title="Run an Application: DMS Launcher" {
         spawn "dms" "ipc" "launcher" "toggle";
     }
+    Mod+Ctrl+Space hotkey-overlay-title="Insert Emoji" {
+        spawn "rofimoji";
+    }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.

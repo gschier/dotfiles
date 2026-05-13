@@ -255,14 +255,18 @@ install_pkg gcc
 install_pkg git
 install_pkg gh
 install_pkg golang
+install_pkg google-noto-color-emoji-fonts
 install_pkg jq
 install_pkg logiops
 install_pkg make
 install_pkg neovim
+install_pkg rofimoji
 install_pkg stow
 install_pkg dbus-devel
 install_pkg flatpak
 install_pkg wget
+install_pkg wofi
+install_pkg wtype
 install_docker
 install_development_dependencies
 install_cmd rustup \
