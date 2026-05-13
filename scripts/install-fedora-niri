@@ -127,6 +127,11 @@ EOF
 	fi
 }
 
+install_tailscale() {
+	install_pkg tailscale
+	sudo systemctl enable --now tailscaled
+}
+
 install_docker() {
 	echo "Installing Docker and Compose..."
 	install_pkg moby-engine
@@ -308,7 +313,9 @@ install_cmd railway \
 	bash -c 'bash <(curl -fsSL cli.new)'
 install_1password
 install_stripe
+install_tailscale
 install_asdbctl
+install_flatpak_app org.gnome.World.PikaBackup "Pika Backup"
 install_flatpak_app org.telegram.desktop "Telegram Desktop"
 
 echo "Setup Complete"
