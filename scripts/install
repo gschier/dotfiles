@@ -3,11 +3,11 @@
 set -euo pipefail
 
 packages=(
+  dank-material-shell
   hypr
   niri
   nvim
   systemd-user
-  waybar
   zed-projects
   zed-linux
 )

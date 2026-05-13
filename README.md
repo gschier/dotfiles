@@ -9,11 +9,11 @@ their final location under `$HOME`.
 
 Current starter packages:
 
+- `dank-material-shell`
 - `hypr`
 - `niri`
 - `nvim`
 - `systemd-user`
-- `waybar`
 - `zed-projects`
 - `zed-linux`
 - `zed-macos`
@@ -21,6 +21,7 @@ Current starter packages:
 Example:
 
 ```text
+dank-material-shell/.config/DankMaterialShell/
 nvim/.config/nvim/
 hypr/.config/hypr/
 niri/.config/niri/

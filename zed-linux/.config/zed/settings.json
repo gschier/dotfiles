@@ -7,6 +7,7 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "cli_default_open_behavior": "existing_window",
   "edit_predictions": {
     "provider": "copilot",
   },
@@ -84,7 +85,7 @@
   "theme": {
     "mode": "dark",
     "light": "Fleet Light",
-    "dark": "Aether",
+    "dark": "DankShell Dark",
   },
   "vim_mode": true,
   "ui_font_size": 14.0,

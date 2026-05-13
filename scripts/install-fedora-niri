@@ -26,6 +26,15 @@ install_pkg() {
 	fi
 }
 
+install_pkg_no_weak_deps() {
+	if ! rpm -q "$1" >/dev/null 2>&1; then
+		echo "Installing $1 without weak dependencies"
+		sudo dnf install -y --setopt=install_weak_deps=False "$1"
+	else
+		echo "Already installed $1"
+	fi
+}
+
 install_cmd() {
 	local check_bin="$1"
 	shift
@@ -35,6 +44,40 @@ install_cmd() {
 		"$@"
 	else
 		echo "Already installed $check_bin"
+	fi
+}
+
+install_flatpak_app() {
+	local app_id="$1"
+	local app_name="$2"
+
+	if ! flatpak info "$app_id" >/dev/null 2>&1; then
+		echo "Installing $app_name..."
+		sudo flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+		sudo flatpak install --system -y flathub "$app_id"
+	else
+		echo "Already installed $app_name"
+	fi
+}
+
+install_dms() {
+	if ! rpm -q dms >/dev/null 2>&1; then
+		echo "Installing Dank Material Shell..."
+		sudo dnf copr enable -y avengemedia/dms
+		sudo dnf install -y dms
+	else
+		echo "Already installed Dank Material Shell"
+	fi
+}
+
+install_dms_plugin() {
+	local plugin_id="$1"
+
+	if ! dms plugins list | grep -q "ID: $plugin_id"; then
+		echo "Installing DMS plugin $plugin_id..."
+		dms plugins install "$plugin_id"
+	else
+		echo "Already installed DMS plugin $plugin_id"
 	fi
 }
 
@@ -49,6 +92,33 @@ install_packer() {
 	fi
 }
 
+install_1password() {
+	if ! rpm -q 1password >/dev/null 2>&1; then
+		echo "Installing 1Password..."
+		sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
+		sudo tee /etc/yum.repos.d/1password.repo >/dev/null <<'EOF'
+[1password]
+name=1Password Stable Channel
+baseurl=https://downloads.1password.com/linux/rpm/stable/$basearch
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey="https://downloads.1password.com/linux/keys/1password.asc"
+EOF
+		sudo dnf install -y 1password
+	else
+		echo "Already installed 1Password"
+	fi
+}
+
+install_system_dconf() {
+	echo "Installing system dconf defaults..."
+	sudo install -Dm644 \
+		"$repo_dir/system/etc/dconf/db/local.d/00-interface" \
+		/etc/dconf/db/local.d/00-interface
+	sudo dconf update
+}
+
 echo "Updating dependencies..."
 sudo dnf update -y
 
@@ -56,19 +126,26 @@ echo "Creating ~/Workspace..."
 mkdir -p ~/Workspace
 
 echo "Installing dependencies..."
-install_pkg niri
+install_pkg_no_weak_deps niri
 install_pkg greetd
 install_pkg tuigreet
 install_pkg gnome-keyring
+install_pkg xdg-desktop-portal
+install_pkg xdg-desktop-portal-gnome
+install_pkg xdg-desktop-portal-gtk
 install_pkg curl
 install_pkg gcc
 install_pkg git
 install_pkg make
 install_pkg neovim
 install_pkg stow
+install_pkg flatpak
+install_dms
+install_dms_plugin calculator
 
 echo "Linking dotfiles..."
 "$repo_dir/scripts/install"
+install_system_dconf
 
 install_packer
 
@@ -87,7 +164,7 @@ sudo tee /etc/greetd/config.toml >/dev/null <<'EOF'
 [terminal]
 vt = 1
 [default_session]
-command = "tuigreet --time --remember --cmd niri"
+command = "tuigreet --time --remember --cmd niri-session"
 user = "greetd"
 EOF
 sudo systemctl enable greetd
@@ -100,5 +177,7 @@ install_cmd codex \
 	bash -c 'vp install -g @openai/codex'
 install_cmd zed \
 	bash -c 'curl -f https://zed.dev/install.sh | sh'
+install_1password
+install_flatpak_app org.telegram.desktop "Telegram Desktop"
 
 echo "Setup Complete"
