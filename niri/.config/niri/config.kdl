@@ -648,3 +648,5 @@ binds {
 include "dms/cursor.kdl"
 
 include "dms/windowrules.kdl"
+
+include "dms/colors.kdl"
