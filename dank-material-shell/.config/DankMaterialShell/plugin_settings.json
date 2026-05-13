@@ -2,5 +2,20 @@
   "calculator": {
     "enabled": true,
     "trigger": "="
+  },
+  "emojiLauncher": {
+    "enabled": true,
+    "recentEmojis": "🙂,⌣,󰞅"
+  },
+  "dmsScreenshot": {
+    "enabled": true
+  },
+  "commandRunner": {
+    "enabled": true,
+    "history": [
+      "dms ipc lock lock",
+      "dms restart",
+      "echo \"foo\""
+    ]
   }
 }

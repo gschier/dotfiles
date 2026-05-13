@@ -111,6 +111,22 @@ EOF
 	fi
 }
 
+install_stripe() {
+	if ! command -v stripe >/dev/null 2>&1; then
+		echo "Installing Stripe CLI..."
+		sudo tee /etc/yum.repos.d/stripe.repo >/dev/null <<'EOF'
+[Stripe]
+name=stripe
+baseurl=https://packages.stripe.dev/stripe-cli-rpm-local/
+enabled=1
+gpgcheck=0
+EOF
+		sudo dnf install -y stripe
+	else
+		echo "Already installed Stripe CLI"
+	fi
+}
+
 install_system_dconf() {
 	echo "Installing system dconf defaults..."
 	sudo install -Dm644 \
@@ -136,6 +152,7 @@ install_pkg xdg-desktop-portal-gtk
 install_pkg curl
 install_pkg gcc
 install_pkg git
+install_pkg gh
 install_pkg make
 install_pkg neovim
 install_pkg stow
@@ -178,6 +195,7 @@ install_cmd codex \
 install_cmd zed \
 	bash -c 'curl -f https://zed.dev/install.sh | sh'
 install_1password
+install_stripe
 install_flatpak_app org.telegram.desktop "Telegram Desktop"
 
 echo "Setup Complete"

@@ -6,16 +6,16 @@
   "matugenScheme": "scheme-tonal-spot",
   "runUserMatugenTemplates": true,
   "matugenTargetMonitor": "",
-  "popupTransparency": 1,
-  "dockTransparency": 1,
+  "popupTransparency": 0.85,
+  "dockTransparency": 0.73,
   "widgetBackgroundColor": "sch",
   "widgetColorMode": "default",
   "controlCenterTileColorMode": "primary",
   "buttonColorMode": "primary",
-  "cornerRadius": 12,
-  "niriLayoutGapsOverride": -1,
-  "niriLayoutRadiusOverride": -1,
-  "niriLayoutBorderSize": -1,
+  "cornerRadius": 32,
+  "niriLayoutGapsOverride": 15,
+  "niriLayoutRadiusOverride": 11,
+  "niriLayoutBorderSize": 2,
   "hyprlandLayoutGapsOverride": -1,
   "hyprlandLayoutRadiusOverride": -1,
   "hyprlandLayoutBorderSize": -1,
@@ -142,19 +142,26 @@
       "id": "bluetooth",
       "enabled": true,
       "width": 50
+    },
+    {
+      "id": "diskUsage",
+      "enabled": true,
+      "width": 50,
+      "instanceId": "mp3n0fah4xijc32uwq1te2pak7skmx",
+      "mountPath": "/"
     }
   ],
   "showWorkspaceIndex": false,
-  "showWorkspaceName": false,
+  "showWorkspaceName": true,
   "showWorkspacePadding": false,
   "workspaceScrolling": false,
   "showWorkspaceApps": true,
   "workspaceDragReorder": true,
   "maxWorkspaceIcons": 9,
-  "workspaceAppIconSizeOffset": 1,
+  "workspaceAppIconSizeOffset": 0,
   "groupWorkspaceApps": true,
   "workspaceFollowFocus": false,
-  "showOccupiedWorkspacesOnly": false,
+  "showOccupiedWorkspacesOnly": true,
   "reverseScrolling": false,
   "dwlShowAllTags": false,
   "workspaceColorMode": "default",
@@ -229,7 +236,7 @@
   "appPickerViewMode": "grid",
   "filePickerUsageHistory": {},
   "sortAppsAlphabetically": false,
-  "appLauncherGridColumns": 4,
+  "appLauncherGridColumns": 5,
   "spotlightCloseNiriOverview": true,
   "spotlightSectionViewModes": {
     "apps": "list"
@@ -238,9 +245,9 @@
   "niriOverviewOverlayEnabled": true,
   "dankLauncherV2Size": "micro",
   "dankLauncherV2BorderEnabled": false,
-  "dankLauncherV2BorderThickness": 2,
-  "dankLauncherV2BorderColor": "primary",
-  "dankLauncherV2ShowFooter": true,
+  "dankLauncherV2BorderThickness": 1,
+  "dankLauncherV2BorderColor": "surfaceText",
+  "dankLauncherV2ShowFooter": false,
   "dankLauncherV2UnloadOnClose": false,
   "useAutoLocation": false,
   "weatherEnabled": true,
@@ -338,16 +345,16 @@
   "matugenTemplateVscode": true,
   "matugenTemplateEmacs": true,
   "matugenTemplateZed": true,
-  "showDock": false,
+  "showDock": true,
   "dockAutoHide": false,
-  "dockSmartAutoHide": false,
+  "dockSmartAutoHide": true,
   "dockGroupByApp": true,
   "dockOpenOnOverview": false,
   "dockPosition": 1,
-  "dockSpacing": 4,
+  "dockSpacing": 10,
   "dockBottomGap": 0,
   "dockMargin": 0,
-  "dockIconSize": 34,
+  "dockIconSize": 48,
   "dockIndicatorStyle": "circle",
   "dockBorderEnabled": false,
   "dockBorderColor": "surfaceText",
@@ -370,14 +377,14 @@
   "modalDarkenBackground": true,
   "lockScreenShowPowerActions": true,
   "lockScreenShowSystemIcons": true,
-  "lockScreenShowTime": false,
-  "lockScreenShowDate": false,
+  "lockScreenShowTime": true,
+  "lockScreenShowDate": true,
   "lockScreenShowProfileImage": false,
   "lockScreenShowPasswordField": true,
   "lockScreenShowMediaPlayer": true,
-  "lockScreenPowerOffMonitorsOnLock": false,
+  "lockScreenPowerOffMonitorsOnLock": true,
   "lockAtStartup": false,
-  "enableFprint": false,
+  "enableFprint": true,
   "maxFprintTries": 15,
   "enableU2f": false,
   "u2fMode": "or",
@@ -411,7 +418,7 @@
   "osdPowerProfileEnabled": false,
   "osdAudioOutputEnabled": true,
   "powerActionConfirm": true,
-  "powerActionHoldDuration": 0.5,
+  "powerActionHoldDuration": 0.75,
   "powerMenuActions": [
     "reboot",
     "logout",
@@ -428,7 +435,7 @@
   "customPowerActionHibernate": "",
   "customPowerActionReboot": "",
   "customPowerActionPowerOff": "",
-  "updaterHideWidget": false,
+  "updaterHideWidget": true,
   "updaterUseCustomCommand": false,
   "updaterCustomCommand": "",
   "updaterTerminalAdditionalParams": "",
@@ -454,6 +461,11 @@
       "showOnLastDisplay": true,
       "leftWidgets": [
         {
+          "id": "spacer",
+          "enabled": true,
+          "size": 5
+        },
+        {
           "id": "workspaceSwitcher",
           "enabled": true
         }
@@ -463,6 +475,10 @@
           "id": "focusedWindow",
           "enabled": true,
           "focusedWindowCompactMode": false
+        },
+        {
+          "id": "systemUpdate",
+          "enabled": true
         }
       ],
       "rightWidgets": [
@@ -507,19 +523,24 @@
         {
           "id": "clock",
           "enabled": true
+        },
+        {
+          "id": "spacer",
+          "enabled": true,
+          "size": 5
         }
       ],
       "spacing": 0,
-      "innerPadding": 2,
-      "bottomGap": -2,
-      "transparency": 0.71,
-      "widgetTransparency": 0.75,
+      "innerPadding": 4,
+      "bottomGap": -14,
+      "transparency": 0,
+      "widgetTransparency": 0.83,
       "squareCorners": true,
       "noBackground": false,
       "maximizeWidgetIcons": false,
       "maximizeWidgetText": false,
       "removeWidgetPadding": false,
-      "widgetPadding": 8,
+      "widgetPadding": 12,
       "gothCornersEnabled": false,
       "gothCornerRadiusOverride": false,
       "gothCornerRadiusValue": 12,
@@ -628,7 +649,10 @@
       "enabled": true
     },
     "dms_settings": {
-      "enabled": true
+      "enabled": false
+    },
+    "dms_notepad": {
+      "enabled": false
     }
   },
   "clipboardEnterToPaste": false,

@@ -472,7 +472,10 @@ binds {
     Mod+Ctrl+I         { move-column-to-workspace-up; }
 
     // Alternatively, there are commands to move just a single window:
-    // Mod+Ctrl+Page_Down { move-window-to-workspace-down; }
+    Mod+Ctrl+Shift+Page_Down { move-window-to-workspace-down; }
+    Mod+Ctrl+Shift+Page_Up   { move-window-to-workspace-up; }
+    Mod+Ctrl+Shift+U         { move-window-to-workspace-down; }
+    Mod+Ctrl+Shift+I         { move-window-to-workspace-up; }
     // ...
 
     Mod+Shift+Page_Down { move-workspace-down; }
@@ -540,7 +543,15 @@ binds {
     Mod+Ctrl+9 { move-column-to-workspace 9; }
 
     // Alternatively, there are commands to move just a single window:
-    // Mod+Ctrl+1 { move-window-to-workspace 1; }
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+    Mod+Shift+6 { move-window-to-workspace 6; }
+    Mod+Shift+7 { move-window-to-workspace 7; }
+    Mod+Shift+8 { move-window-to-workspace 8; }
+    Mod+Shift+9 { move-window-to-workspace 9; }
 
     // Switches focus between the current and the previous workspace.
     // Mod+Tab { focus-workspace-previous; }
@@ -614,15 +625,15 @@ binds {
     // Mod+Space       { switch-layout "next"; }
     // Mod+Shift+Space { switch-layout "prev"; }
 
-    Super+Shift+3 hotkey-overlay-title="Screenshot Screen" {
+    Super+Ctrl+Shift+3 hotkey-overlay-title="Screenshot Screen" {
         spawn "dms" "screenshot" "full";
     }
 
-    Super+Shift+4 hotkey-overlay-title="Screenshot Region" {
+    Super+Ctrl+Shift+4 hotkey-overlay-title="Screenshot Region" {
         spawn "dms" "screenshot";
     }
 
-    Super+Shift+5 hotkey-overlay-title="Screenshot Last Region" {
+    Super+Ctrl+Shift+5 hotkey-overlay-title="Screenshot Last Region" {
         spawn "dms" "screenshot" "last";
     }
 
@@ -650,3 +661,5 @@ include "dms/cursor.kdl"
 include "dms/windowrules.kdl"
 
 include "dms/colors.kdl"
+
+include "dms/layout.kdl"
