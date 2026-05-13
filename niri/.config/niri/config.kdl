@@ -398,6 +398,11 @@ binds {
     XF86Launch6 allow-when-locked=true { spawn "/home/gschier/.local/bin/display-brightness" "up" "10"; }
     XF86Launch5 allow-when-locked=true { spawn "/home/gschier/.local/bin/display-brightness" "down" "10"; }
 
+    MouseBack    { focus-workspace-up; }
+    MouseForward { focus-workspace-down; }
+    F13          { toggle-overview; }
+    XF86Tools    { toggle-overview; }
+
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
     // or do a four-finger swipe up on a touchpad.

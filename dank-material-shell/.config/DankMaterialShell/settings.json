@@ -8,11 +8,11 @@
   "matugenTargetMonitor": "",
   "popupTransparency": 0.85,
   "dockTransparency": 0.94,
-  "widgetBackgroundColor": "sch",
+  "widgetBackgroundColor": "sc",
   "widgetColorMode": "default",
   "controlCenterTileColorMode": "primary",
   "buttonColorMode": "primary",
-  "cornerRadius": 32,
+  "cornerRadius": 7,
   "niriLayoutGapsOverride": 15,
   "niriLayoutRadiusOverride": 11,
   "niriLayoutBorderSize": 2,
@@ -477,6 +477,10 @@
           "size": 5
         },
         {
+          "id": "launcherButton",
+          "enabled": true
+        },
+        {
           "id": "workspaceSwitcher",
           "enabled": true
         }
@@ -546,16 +550,16 @@
         }
       ],
       "spacing": 0,
-      "innerPadding": 4,
+      "innerPadding": 3,
       "bottomGap": -14,
       "transparency": 0,
-      "widgetTransparency": 0.69,
+      "widgetTransparency": 0.75,
       "squareCorners": true,
       "noBackground": false,
       "maximizeWidgetIcons": false,
       "maximizeWidgetText": false,
       "removeWidgetPadding": false,
-      "widgetPadding": 12,
+      "widgetPadding": 10,
       "gothCornersEnabled": false,
       "gothCornerRadiusOverride": false,
       "gothCornerRadiusValue": 12,

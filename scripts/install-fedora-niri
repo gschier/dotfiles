@@ -144,6 +144,19 @@ install_docker() {
 	fi
 }
 
+install_air() {
+	local air_bin="$HOME/.local/bin/air"
+
+	if command -v air >/dev/null 2>&1 || [[ -x "$air_bin" ]]; then
+		echo "Already installed Air"
+		return
+	fi
+
+	echo "Installing Air..."
+	mkdir -p "$HOME/.local/bin"
+	GOBIN="$HOME/.local/bin" go install github.com/air-verse/air@latest
+}
+
 install_asdbctl_udev_rule() {
 	local rules_file="/etc/udev/rules.d/70-apple-studio-display.rules"
 	local rules_content='SUBSYSTEM=="hidraw", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="1118", TAG+="uaccess"'
@@ -236,7 +249,9 @@ install_pkg curl
 install_pkg gcc
 install_pkg git
 install_pkg gh
+install_pkg golang
 install_pkg jq
+install_pkg logiops
 install_pkg make
 install_pkg neovim
 install_pkg stow
@@ -247,12 +262,17 @@ install_docker
 install_development_dependencies
 install_cmd rustup \
 	bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
+install_air
 install_dms
 install_dms_plugin calculator
 
 echo "Linking dotfiles..."
 "$repo_dir/scripts/install"
 install_system_dconf
+
+echo "Installing logiops config..."
+sudo install -Dm644 "$repo_dir/system/etc/logid.cfg" /etc/logid.cfg
+sudo systemctl enable --now logid
 
 install_packer
 
