@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if pgrep -x rofimoji >/dev/null || pgrep -x rofi >/dev/null || pgrep -x wofi >/dev/null; then
+	pkill -x rofimoji || true
+	pkill -x rofi || true
+	pkill -x wofi || true
+	exit 0
+fi
+
+exec rofimoji

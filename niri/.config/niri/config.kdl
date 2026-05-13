@@ -371,7 +371,7 @@ binds {
         spawn "dms" "ipc" "launcher" "toggle";
     }
     Mod+Ctrl+Space hotkey-overlay-title="Insert Emoji" {
-        spawn "rofimoji";
+        spawn "emoji-picker";
     }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 

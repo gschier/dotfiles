@@ -1,6 +1,9 @@
-selector=wofi
+selector=rofi
 action=clipboard
 clipboarder=wl-copy
 typer=wtype
-prompt=Emoji
-selector-args=--style /home/gschier/.config/wofi/emoji.css --width 720 --height 420 --lines 10 --hide-scroll --gtk-dark --insensitive
+prompt=
+use-icons=false
+hidden-descriptions=true
+max-recent=0
+selector-args=-theme /home/gschier/.config/rofi/emoji.rasi

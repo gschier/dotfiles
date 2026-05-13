@@ -262,6 +262,7 @@ install_pkg make
 install_pkg neovim
 install_pkg rofimoji
 install_pkg stow
+install_pkg twitter-twemoji-fonts
 install_pkg dbus-devel
 install_pkg flatpak
 install_pkg wget
@@ -308,9 +309,11 @@ sudo systemctl enable greetd
 install_cmd vp \
 	bash -c 'curl -fsSL https://vite.plus | VP_NODE_MANAGER=yes bash'
 install_cmd google-chrome \
-	sudo dnf install https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+	bash -c 'sudo dnf install https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm'
 install_cmd codex \
 	bash -c 'vp install -g @openai/codex'
+install_cmd omnara \
+    bash -c 'curl -fsSL https://omnara.com/install.sh | bash'
 install_cmd zed \
 	bash -c 'curl -f https://zed.dev/install.sh | sh'
 install_cmd railway \

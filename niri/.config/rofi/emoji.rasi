@@ -1,0 +1,121 @@
+configuration {
+    show-icons: false;
+}
+
+* {
+    background: #101417f0;
+    surface: #1c2024fa;
+    foreground: #f8fcff;
+    muted: #939b9f;
+    accent: #93cdf6;
+    selected: #2b4658;
+}
+
+window {
+    width: 520px;
+    padding: 0;
+    border: 1px;
+    border-color: #5f98bd;
+    border-radius: 12px;
+    background-color: @background;
+}
+
+mainbox {
+    padding: 12px;
+    spacing: 10px;
+    background-color: @background;
+}
+
+inputbar {
+    padding: 8px 12px;
+    border: 1px;
+    border-color: #456b86;
+    border-radius: 8px;
+    background-color: @surface;
+    text-color: @foreground;
+    children: [prompt, textbox-prompt-colon, entry];
+}
+
+prompt {
+    margin: 0 10px 0 0;
+    padding: 0;
+    background-color: transparent;
+    text-color: @muted;
+}
+
+entry {
+    padding: 0;
+    background-color: transparent;
+    text-color: @foreground;
+    placeholder-color: @muted;
+}
+
+textbox-prompt-colon {
+    enabled: false;
+    background-color: transparent;
+}
+
+case-indicator,
+num-filtered-rows,
+num-rows,
+textbox-num-sep,
+overlay {
+    enabled: false;
+    background-color: transparent;
+    text-color: @muted;
+}
+
+listview {
+    columns: 12;
+    lines: 7;
+    cycle: true;
+    dynamic: true;
+    layout: vertical;
+    flow: horizontal;
+    fixed-height: true;
+    fixed-columns: true;
+    spacing: 4px;
+    background-color: @background;
+    scrollbar: false;
+}
+
+element {
+    padding: 4px;
+    border-radius: 6px;
+    orientation: vertical;
+    background-color: @background;
+    text-color: @foreground;
+}
+
+element normal.normal,
+element alternate.normal {
+    background-color: @background;
+    text-color: @foreground;
+}
+
+element selected.normal {
+    background-color: @selected;
+    text-color: @foreground;
+}
+
+element-text {
+    enabled: true;
+    font: "Noto Color Emoji 16";
+    vertical-align: 0.5;
+    horizontal-align: 0.5;
+    background-color: transparent;
+    text-color: @foreground;
+}
+
+message {
+    padding: 5px 8px;
+    border: 0;
+    border-radius: 6px;
+    background-color: @background;
+    text-color: @foreground;
+}
+
+textbox {
+    background-color: transparent;
+    text-color: @foreground;
+}
