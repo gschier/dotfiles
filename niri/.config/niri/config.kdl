@@ -373,6 +373,9 @@ binds {
     Mod+Ctrl+Space hotkey-overlay-title="Insert Emoji" {
         spawn "emoji-picker";
     }
+    Super+X hotkey-overlay-title="Cut" { spawn "wtype" "-M" "ctrl" "x" "-m" "ctrl"; }
+    Super+C hotkey-overlay-title="Copy" { spawn "wtype" "-M" "ctrl" "-P" "Insert" "-p" "Insert" "-m" "ctrl"; }
+    Super+V hotkey-overlay-title="Paste" { spawn "wtype" "-M" "shift" "-P" "Insert" "-p" "Insert" "-m" "shift"; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.

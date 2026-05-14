@@ -15,4 +15,5 @@ nvim/.config/nvim/lua/local.lua
 waybar/.config/waybar/local.css
 waybar/.config/waybar/local.jsonc
 zed-linux/.config/zed/private.json
+zed-linux/.config/zed/themes/dank-zed-theme.json
 zed-macos/.config/zed/private.json

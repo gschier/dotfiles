@@ -13,10 +13,10 @@
   "commandRunner": {
     "enabled": true,
     "history": [
+      "dms ipc lock lock",
       "zed -n ~/Workspace/yaak",
       "zed ~/Workspace/yaak",
       "zed ~/Workspace/yaak-web",
-      "dms ipc lock lock",
       "dms restart",
       "echo \"foo\""
     ]
