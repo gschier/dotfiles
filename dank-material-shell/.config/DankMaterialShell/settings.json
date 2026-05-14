@@ -15,7 +15,7 @@
   "cornerRadius": 7,
   "niriLayoutGapsOverride": 15,
   "niriLayoutRadiusOverride": 11,
-  "niriLayoutBorderSize": 2,
+  "niriLayoutBorderSize": 1,
   "hyprlandLayoutGapsOverride": -1,
   "hyprlandLayoutRadiusOverride": -1,
   "hyprlandLayoutBorderSize": -1,
@@ -472,11 +472,6 @@
       "showOnLastDisplay": true,
       "leftWidgets": [
         {
-          "id": "spacer",
-          "enabled": true,
-          "size": 5
-        },
-        {
           "id": "launcherButton",
           "enabled": true
         },
@@ -548,14 +543,13 @@
           "enabled": true
         },
         {
-          "id": "spacer",
-          "enabled": true,
-          "size": 5
+          "id": "dankCalendar",
+          "enabled": true
         }
       ],
       "spacing": 0,
-      "innerPadding": 3,
-      "bottomGap": -14,
+      "innerPadding": -3,
+      "bottomGap": -10,
       "transparency": 0,
       "widgetTransparency": 0.75,
       "squareCorners": true,

@@ -23,5 +23,8 @@
   },
   "studioBrightness": {
     "enabled": true
+  },
+  "dankCalendar": {
+    "enabled": true
   }
 }

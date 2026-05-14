@@ -85,7 +85,7 @@
   "theme": {
     "mode": "dark",
     "light": "Fleet Light",
-    "dark": "DankShell Dark",
+    "dark": "Fleet Dark Purple",
   },
   "vim_mode": true,
   "ui_font_size": 14.0,
