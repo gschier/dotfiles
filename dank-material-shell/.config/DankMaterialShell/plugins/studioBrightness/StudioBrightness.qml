@@ -86,13 +86,6 @@ PluginComponent {
                 root.laptopBrightness = state.value;
             if (state.target === "studio")
                 root.studioBrightness = state.value;
-
-            if (showOsd) {
-                root.osdTarget = state.target || "laptop";
-                root.osdValue = state.value || 0;
-                root.osdScreen = state.screen || "";
-                root.osdSequence = state.sequence || Date.now();
-            }
         } catch (e) {
             console.warn("StudioBrightness: failed to parse state:", e);
         }
@@ -127,18 +120,6 @@ PluginComponent {
         onFileChanged: {
             root.stateReloadFromWatch = true;
             stateFile.reload();
-        }
-    }
-
-    Variants {
-        model: SettingsData.getFilteredScreens("osd")
-
-        delegate: StudioBrightnessOSD {
-            modelData: item
-            target: root.osdTarget
-            value: root.osdValue
-            requestSequence: root.osdSequence
-            targetScreen: root.osdScreen
         }
     }
 

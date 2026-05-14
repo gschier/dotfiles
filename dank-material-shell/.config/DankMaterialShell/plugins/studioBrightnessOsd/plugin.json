@@ -1,0 +1,13 @@
+{
+  "id": "studioBrightnessOsd",
+  "name": "Studio Brightness OSD",
+  "description": "Shows OSD feedback for laptop and Apple Studio Display brightness hotkeys",
+  "version": "1.0.0",
+  "author": "gschier",
+  "type": "daemon",
+  "capabilities": ["monitoring"],
+  "component": "./StudioBrightnessOsdDaemon.qml",
+  "icon": "brightness_6",
+  "requires": ["display-brightness"],
+  "permissions": ["process"]
+}

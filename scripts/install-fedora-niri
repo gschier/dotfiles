@@ -236,6 +236,15 @@ install_system_dconf() {
 	sudo dconf update
 }
 
+install_nautilus_launcher_override() {
+	local desktop_file="$HOME/.local/share/applications/org.gnome.Nautilus.desktop"
+
+	echo "Installing Nautilus launcher override..."
+	install -Dm644 /usr/share/applications/org.gnome.Nautilus.desktop "$desktop_file"
+	sed -i 's/^Icon=.*/Icon=system-file-manager/' "$desktop_file"
+	update-desktop-database "$HOME/.local/share/applications" >/dev/null 2>&1 || true
+}
+
 echo "Updating dependencies..."
 sudo dnf update -y
 
@@ -326,5 +335,6 @@ install_tailscale
 install_asdbctl
 install_flatpak_app org.gnome.World.PikaBackup "Pika Backup"
 install_flatpak_app org.telegram.desktop "Telegram Desktop"
+install_nautilus_launcher_override
 
 echo "Setup Complete"

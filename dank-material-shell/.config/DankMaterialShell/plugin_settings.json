@@ -26,6 +26,9 @@
   "studioBrightness": {
     "enabled": true
   },
+  "studioBrightnessOsd": {
+    "enabled": true
+  },
   "dankCalendar": {
     "enabled": true,
     "caldavUrl": "",
