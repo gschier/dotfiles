@@ -14,17 +14,25 @@
     "enabled": true,
     "history": [
       "dms ipc lock lock",
+      "zed",
       "zed -n ~/Workspace/yaak",
       "zed ~/Workspace/yaak",
       "zed ~/Workspace/yaak-web",
       "dms restart",
       "echo \"foo\""
-    ]
+    ],
+    "terminal": "alacritty"
   },
   "studioBrightness": {
     "enabled": true
   },
   "dankCalendar": {
+    "enabled": true,
+    "caldavUrl": "",
+    "caldavUsername": "",
+    "caldavPassword": ""
+  },
+  "nextEvent": {
     "enabled": true
   }
 }

@@ -119,21 +119,6 @@
       "width": 50
     },
     {
-      "id": "idleInhibitor",
-      "enabled": true,
-      "width": 50
-    },
-    {
-      "id": "nightMode",
-      "enabled": true,
-      "width": 50
-    },
-    {
-      "id": "colorPicker",
-      "enabled": true,
-      "width": 50
-    },
-    {
       "id": "darkMode",
       "enabled": true,
       "width": 50
@@ -142,13 +127,6 @@
       "id": "bluetooth",
       "enabled": true,
       "width": 50
-    },
-    {
-      "id": "diskUsage",
-      "enabled": true,
-      "width": 50,
-      "instanceId": "mp3n0fah4xijc32uwq1te2pak7skmx",
-      "mountPath": "/"
     }
   ],
   "showWorkspaceIndex": false,
@@ -497,6 +475,10 @@
       ],
       "rightWidgets": [
         {
+          "id": "nextEvent",
+          "enabled": true
+        },
+        {
           "id": "weather",
           "enabled": true
         },
@@ -541,14 +523,10 @@
         {
           "id": "clock",
           "enabled": true
-        },
-        {
-          "id": "dankCalendar",
-          "enabled": true
         }
       ],
       "spacing": 0,
-      "innerPadding": -3,
+      "innerPadding": 4,
       "bottomGap": -10,
       "transparency": 0,
       "widgetTransparency": 0.75,

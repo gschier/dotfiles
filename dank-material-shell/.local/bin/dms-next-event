@@ -1,0 +1,287 @@
+#!/usr/bin/env python3
+import json
+import os
+import re
+import sys
+import time
+import base64
+import urllib.request
+from urllib.parse import unquote, urlparse
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+from dateutil import rrule, tz
+
+
+CONFIG_HOME = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+CONFIG_PATH = CONFIG_HOME / "dms-next-event" / "config.json"
+DMS_SETTINGS_PATH = CONFIG_HOME / "DankMaterialShell" / "plugin_settings.json"
+CACHE_PATH = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "dms-next-event" / "calendar.ics"
+URL_RE = re.compile(r"https?://[^\s<>\"']+")
+
+
+def emit(payload):
+    print(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+
+
+def load_config():
+    config = {}
+    if not CONFIG_PATH.exists():
+        pass
+    else:
+        with CONFIG_PATH.open() as f:
+            config.update(json.load(f))
+
+    if DMS_SETTINGS_PATH.exists():
+        try:
+            with DMS_SETTINGS_PATH.open() as f:
+                plugin_settings = json.load(f).get("nextEvent", {})
+            if plugin_settings.get("icsUrl"):
+                config["ics_url"] = plugin_settings["icsUrl"]
+            if plugin_settings.get("lookaheadDays") is not None:
+                config["lookahead_days"] = plugin_settings["lookaheadDays"]
+            if plugin_settings.get("cacheMinutes") is not None:
+                config["cache_minutes"] = plugin_settings["cacheMinutes"]
+        except Exception:
+            pass
+
+    return config
+
+
+def unfold_ics(text):
+    lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    out = []
+    for line in lines:
+        if line.startswith((" ", "\t")) and out:
+            out[-1] += line[1:]
+        else:
+            out.append(line)
+    return out
+
+
+def unescape_ics(value):
+    return (
+        value.replace("\\n", "\n")
+        .replace("\\N", "\n")
+        .replace("\\,", ",")
+        .replace("\\;", ";")
+        .replace("\\\\", "\\")
+    )
+
+
+def parse_property(line):
+    if ":" not in line:
+        return None, {}, ""
+    lhs, value = line.split(":", 1)
+    parts = lhs.split(";")
+    name = parts[0].upper()
+    params = {}
+    for part in parts[1:]:
+        if "=" in part:
+            key, val = part.split("=", 1)
+            params[key.upper()] = val.strip('"')
+    return name, params, unescape_ics(value)
+
+
+def parse_dt(value, params):
+    is_date = params.get("VALUE", "").upper() == "DATE" or (len(value) == 8 and "T" not in value)
+    if is_date:
+        return datetime.strptime(value[:8], "%Y%m%d").replace(tzinfo=tz.tzlocal()), True
+
+    if value.endswith("Z"):
+        return datetime.strptime(value, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc), False
+
+    zone = tz.gettz(params.get("TZID", "")) or tz.tzlocal()
+    return datetime.strptime(value, "%Y%m%dT%H%M%S").replace(tzinfo=zone), False
+
+
+def parse_exdates(value, params):
+    dates = []
+    for item in value.split(","):
+        item = item.strip()
+        if not item:
+            continue
+        try:
+            dates.append(parse_dt(item, params)[0])
+        except Exception:
+            pass
+    return dates
+
+
+def clean_url(value):
+    return value.rstrip(").,;]")
+
+
+def google_calendar_id(feed_url):
+    path_parts = [unquote(part) for part in urlparse(feed_url).path.split("/") if part]
+    try:
+        index = path_parts.index("ical")
+    except ValueError:
+        return ""
+    if index + 1 >= len(path_parts):
+        return ""
+    return path_parts[index + 1]
+
+
+def google_event_url(event, feed_url):
+    uid = event.get("uid", "")
+    calendar_id = google_calendar_id(feed_url)
+    if not uid or not calendar_id:
+        return ""
+
+    event_id = uid.split("@", 1)[0]
+    if not event_id:
+        return ""
+
+    eid = base64.urlsafe_b64encode(f"{event_id} {calendar_id}".encode()).decode().rstrip("=")
+    return f"https://calendar.google.com/calendar/event?eid={eid}"
+
+
+def first_event_url(event, feed_url):
+    if event.get("url"):
+        return clean_url(event["url"])
+    for field in ("description",):
+        for match in URL_RE.findall(event.get(field, "")):
+            if "calendar.google.com" not in match:
+                continue
+            return clean_url(match)
+    return google_event_url(event, feed_url)
+
+
+def parse_events(ics_text):
+    events = []
+    current = None
+    for line in unfold_ics(ics_text):
+        if line == "BEGIN:VEVENT":
+            current = {"exdates": []}
+            continue
+        if line == "END:VEVENT":
+            if current and current.get("start") and current.get("summary"):
+                events.append(current)
+            current = None
+            continue
+        if current is None:
+            continue
+
+        name, params, value = parse_property(line)
+        if name == "SUMMARY":
+            current["summary"] = value
+        elif name == "UID":
+            current["uid"] = value
+        elif name == "LOCATION":
+            current["location"] = value
+        elif name == "DESCRIPTION":
+            current["description"] = value
+        elif name == "URL":
+            current["url"] = value
+        elif name == "DTSTART":
+            current["start"], current["all_day"] = parse_dt(value, params)
+        elif name == "DTEND":
+            current["end"], _ = parse_dt(value, params)
+        elif name == "RRULE":
+            current["rrule"] = value
+        elif name == "EXDATE":
+            current["exdates"].extend(parse_exdates(value, params))
+    return events
+
+
+def event_occurrences(event, now, until):
+    start = event["start"]
+    end = event.get("end") or start
+    duration = end - start
+    exdates = {dt.astimezone(timezone.utc).replace(microsecond=0) for dt in event.get("exdates", [])}
+
+    if not event.get("rrule"):
+        if end >= now and start <= until:
+            return [(start, end)]
+        return []
+
+    try:
+        rule = rrule.rrulestr(event["rrule"], dtstart=start)
+    except Exception:
+        return []
+
+    starts = rule.between(now - duration, until, inc=True)
+    out = []
+    for occurrence_start in starts:
+        ex_key = occurrence_start.astimezone(timezone.utc).replace(microsecond=0)
+        if ex_key in exdates:
+            continue
+        occurrence_end = occurrence_start + duration
+        if occurrence_end >= now:
+            out.append((occurrence_start, occurrence_end))
+    return out
+
+
+def fetch_calendar(url, cache_minutes):
+    CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if CACHE_PATH.exists() and cache_minutes > 0:
+        age = time.time() - CACHE_PATH.stat().st_mtime
+        if age < cache_minutes * 60:
+            return CACHE_PATH.read_text(errors="replace")
+
+    req = urllib.request.Request(url, headers={"User-Agent": "dms-next-event/1.0"})
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        data = resp.read().decode("utf-8", errors="replace")
+    CACHE_PATH.write_text(data)
+    return data
+
+
+def relative_label(start, now):
+    delta = start - now
+    seconds = int(delta.total_seconds())
+    if seconds <= 0:
+        return "now"
+    minutes = (seconds + 59) // 60
+    if minutes < 60:
+        return f"in {minutes}m"
+    hours = minutes // 60
+    if hours < 24:
+        return f"in {hours}h"
+    return f"in {hours // 24}d"
+
+
+def main():
+    try:
+        config = load_config()
+        url = config.get("ics_url", "").strip()
+        if not url:
+            emit({"ok": False, "error": "Set iCal URL in Next Event settings"})
+            return
+
+        lookahead_days = int(config.get("lookahead_days", 30))
+        cache_minutes = int(config.get("cache_minutes", 10))
+        now = datetime.now(tz.tzlocal())
+        until = now + timedelta(days=lookahead_days)
+        ics = fetch_calendar(url, cache_minutes)
+
+        candidates = []
+        for event in parse_events(ics):
+            for start, end in event_occurrences(event, now, until):
+                candidates.append((start, end, event))
+
+        candidates.sort(key=lambda item: item[0])
+        if not candidates:
+            emit({"ok": True, "empty": True, "label": "No upcoming events"})
+            return
+
+        start, end, event = candidates[0]
+        local_start = start.astimezone(tz.tzlocal())
+        time_label = local_start.strftime("%a %-I:%M %p")
+        emit({
+            "ok": True,
+            "empty": False,
+            "title": event["summary"],
+            "location": event.get("location", ""),
+            "url": first_event_url(event, url),
+            "startsAt": local_start.isoformat(),
+            "time": time_label,
+            "relative": relative_label(local_start, now),
+            "label": f"{time_label} · {event['summary']}",
+        })
+    except Exception as exc:
+        emit({"ok": False, "error": str(exc)})
+
+
+if __name__ == "__main__":
+    main()

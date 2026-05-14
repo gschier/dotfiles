@@ -1,0 +1,13 @@
+{
+  "id": "nextEvent",
+  "name": "Next Event",
+  "description": "Shows the next event from a private iCal/ICS calendar feed",
+  "version": "1.0.0",
+  "author": "local",
+  "icon": "event",
+  "type": "widget",
+  "capabilities": ["dankbar-widget", "control-center"],
+  "component": "./NextEvent.qml",
+  "settings": "./NextEventSettings.qml",
+  "permissions": ["process", "settings_read", "settings_write"]
+}

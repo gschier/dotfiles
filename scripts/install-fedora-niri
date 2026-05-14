@@ -259,7 +259,9 @@ install_pkg google-noto-color-emoji-fonts
 install_pkg jq
 install_pkg logiops
 install_pkg make
+install_pkg nautilus
 install_pkg neovim
+install_pkg python3-dateutil
 install_pkg rofimoji
 install_pkg stow
 install_pkg twitter-twemoji-fonts

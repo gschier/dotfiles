@@ -58,8 +58,8 @@
   "buffer_font_weight": 400.0,
   "agent": {
     "message_editor_min_lines": 3,
-    "notify_when_agent_waiting": "never",
-    "play_sound_when_agent_done": true,
+    "notify_when_agent_waiting": "all_screens",
+    "play_sound_when_agent_done": "always",
     "inline_assistant_model": {
       "provider": "copilot_chat",
       "model": "gpt-5-mini",
