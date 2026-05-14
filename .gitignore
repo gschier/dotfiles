@@ -12,6 +12,7 @@
 
 hypr/.config/hypr/local.conf
 nvim/.config/nvim/lua/local.lua
+nvim/.config/nvim/lua/plugins/dankcolors.lua
 waybar/.config/waybar/local.css
 waybar/.config/waybar/local.jsonc
 zed-linux/.config/zed/private.json
