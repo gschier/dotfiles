@@ -245,6 +245,35 @@ install_nautilus_launcher_override() {
 	update-desktop-database "$HOME/.local/share/applications" >/dev/null 2>&1 || true
 }
 
+install_discord_launcher_override() {
+	local desktop_file="$HOME/.local/share/applications/discord.desktop"
+	local icon_file="/usr/share/icons/hicolor/256x256/apps/discord.png"
+	local dms_session_file="$HOME/.local/state/DankMaterialShell/session.json"
+	local dms_session_tmp
+
+	if [[ ! -f /usr/share/applications/discord.desktop || ! -f "$icon_file" ]]; then
+		echo "Skipping Discord launcher override; Discord desktop file or icon is missing."
+		return
+	fi
+
+	echo "Installing Discord launcher override..."
+	install -Dm644 /usr/share/applications/discord.desktop "$desktop_file"
+	sed -i "s|^Icon=.*|Icon=$icon_file|" "$desktop_file"
+	update-desktop-database "$HOME/.local/share/applications" >/dev/null 2>&1 || true
+
+	echo "Installing Discord DMS launcher icon override..."
+	mkdir -p "$(dirname "$dms_session_file")"
+	if [[ -f "$dms_session_file" ]]; then
+		dms_session_tmp="$(mktemp)"
+		jq --arg icon "$icon_file" \
+			'.appOverrides = (.appOverrides // {}) | .appOverrides.discord = ((.appOverrides.discord // {}) + {icon: $icon})' \
+			"$dms_session_file" >"$dms_session_tmp"
+		mv "$dms_session_tmp" "$dms_session_file"
+	else
+		printf '{\n  "appOverrides": {\n    "discord": {\n      "icon": "%s"\n    }\n  },\n  "configVersion": 3\n}\n' "$icon_file" >"$dms_session_file"
+	fi
+}
+
 echo "Updating dependencies..."
 sudo dnf update -y
 
@@ -321,6 +350,9 @@ install_cmd vp \
 	bash -c 'curl -fsSL https://vite.plus | VP_NODE_MANAGER=yes bash'
 install_cmd google-chrome \
 	bash -c 'sudo dnf install https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm'
+install_cmd Discord \
+	bash -c 'sudo dnf install -y "https://discord.com/api/download?platform=linux&format=rpm"'
+install_discord_launcher_override
 install_cmd codex \
 	bash -c 'vp install -g @openai/codex'
 install_cmd omnara \

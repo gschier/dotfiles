@@ -12,8 +12,8 @@
   "widgetColorMode": "default",
   "controlCenterTileColorMode": "primary",
   "buttonColorMode": "primary",
-  "cornerRadius": 7,
-  "niriLayoutGapsOverride": 15,
+  "cornerRadius": 32,
+  "niriLayoutGapsOverride": 11,
   "niriLayoutRadiusOverride": 11,
   "niriLayoutBorderSize": 1,
   "hyprlandLayoutGapsOverride": -1,
@@ -137,9 +137,9 @@
   "workspaceDragReorder": true,
   "maxWorkspaceIcons": 9,
   "workspaceAppIconSizeOffset": 0,
-  "groupWorkspaceApps": true,
+  "groupWorkspaceApps": false,
   "workspaceFollowFocus": false,
-  "showOccupiedWorkspacesOnly": true,
+  "showOccupiedWorkspacesOnly": false,
   "reverseScrolling": false,
   "dwlShowAllTags": false,
   "workspaceColorMode": "default",
@@ -230,10 +230,10 @@
   "useAutoLocation": false,
   "weatherEnabled": true,
   "networkPreference": "auto",
-  "iconTheme": "System Default",
+  "iconTheme": "Adwaita",
   "cursorSettings": {
-    "theme": "System Default",
-    "size": 26,
+    "theme": "Adwaita",
+    "size": 27,
     "niri": {
       "hideWhenTyping": false,
       "hideAfterInactiveMs": 0
@@ -323,7 +323,7 @@
   "matugenTemplateVscode": true,
   "matugenTemplateEmacs": true,
   "matugenTemplateZed": true,
-  "showDock": true,
+  "showDock": false,
   "dockAutoHide": false,
   "dockSmartAutoHide": true,
   "dockGroupByApp": true,
@@ -405,7 +405,7 @@
     "suspend",
     "restart"
   ],
-  "powerMenuDefaultAction": "logout",
+  "powerMenuDefaultAction": "lock",
   "powerMenuGridLayout": true,
   "customPowerActionLock": "",
   "customPowerActionLogout": "",
@@ -454,22 +454,17 @@
           "enabled": true
         },
         {
-          "id": "workspaceSwitcher",
+          "id": "systemUpdate",
           "enabled": true
         },
         {
-          "id": "powerMenuButton",
+          "id": "workspaceSwitcher",
           "enabled": true
         }
       ],
       "centerWidgets": [
         {
           "id": "focusedWindow",
-          "enabled": true,
-          "focusedWindowCompactMode": false
-        },
-        {
-          "id": "systemUpdate",
           "enabled": true
         }
       ],
@@ -483,6 +478,11 @@
           "enabled": true
         },
         {
+          "id": "cpuUsage",
+          "enabled": true,
+          "minimumWidth": true
+        },
+        {
           "id": "systemTray",
           "enabled": true
         },
@@ -493,15 +493,6 @@
         {
           "id": "clipboard",
           "enabled": true
-        },
-        {
-          "id": "battery",
-          "enabled": true
-        },
-        {
-          "id": "cpuUsage",
-          "enabled": true,
-          "minimumWidth": true
         },
         {
           "id": "notificationButton",
@@ -529,7 +520,7 @@
       "innerPadding": 4,
       "bottomGap": -10,
       "transparency": 0,
-      "widgetTransparency": 0.75,
+      "widgetTransparency": 0.61,
       "squareCorners": true,
       "noBackground": false,
       "maximizeWidgetIcons": false,

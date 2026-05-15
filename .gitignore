@@ -2,6 +2,8 @@
 *.swp
 *.swo
 *.tmp
+*.pyc
+__pycache__/
 
 **/.cache/
 **/cache/

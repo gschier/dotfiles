@@ -14,6 +14,7 @@ PluginComponent {
     property string locationText: ""
     property string eventUrl: ""
     property string errorText: ""
+    property string transientErrorText: ""
     property bool isEmpty: false
 
     ccWidgetIcon: root.errorText ? "event_busy" : "event"
@@ -64,17 +65,22 @@ PluginComponent {
                 try {
                     const parsed = JSON.parse(line)
                     if (!parsed.ok) {
-                        root.title = "Calendar"
-                        root.timeText = ""
-                        root.relativeText = ""
-                        root.locationText = ""
-                        root.eventUrl = ""
-                        root.errorText = parsed.error || "Unable to load event"
-                        root.isEmpty = false
+                        if (!root.title || root.title === "Calendar") {
+                            root.title = "Calendar"
+                            root.timeText = ""
+                            root.relativeText = ""
+                            root.locationText = ""
+                            root.eventUrl = ""
+                            root.errorText = parsed.error || "Unable to load event"
+                            root.isEmpty = false
+                        } else {
+                            root.transientErrorText = parsed.error || "Unable to refresh event"
+                        }
                         return
                     }
 
                     root.errorText = ""
+                    root.transientErrorText = ""
                     root.isEmpty = parsed.empty || false
                     root.title = parsed.empty ? parsed.label : parsed.title
                     root.timeText = parsed.time || ""
@@ -82,7 +88,7 @@ PluginComponent {
                     root.locationText = parsed.location || ""
                     root.eventUrl = parsed.url || ""
                 } catch (e) {
-                    root.errorText = "Invalid event data"
+                    root.transientErrorText = "Invalid event data"
                 }
             }
         }

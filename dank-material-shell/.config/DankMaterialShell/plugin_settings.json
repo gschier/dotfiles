@@ -36,6 +36,8 @@
     "caldavPassword": ""
   },
   "nextEvent": {
-    "enabled": true
+    "enabled": true,
+    "lookaheadDays": 1,
+    "cacheMinutes": 5
   }
 }
