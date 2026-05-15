@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+set -eu
+
+focus_workspace() {
+    niri msg action focus-workspace "$1" >/dev/null 2>&1 || true
+}
+
+wait_for_app() {
+    app_id="$1"
+    timeout="${2:-12}"
+    elapsed=0
+
+    while [ "$elapsed" -lt "$timeout" ]; do
+        if niri msg -j windows 2>/dev/null | rg -q "\"app_id\":\"$app_id\""; then
+            return 0
+        fi
+
+        sleep 1
+        elapsed=$((elapsed + 1))
+    done
+
+    return 0
+}
+
+focus_workspace 1
+google-chrome >/dev/null 2>&1 &
+flatpak run org.telegram.desktop >/dev/null 2>&1 &
+
+wait_for_app "google-chrome" 15
+wait_for_app "org.telegram.desktop" 15
+
+focus_workspace 2
+/home/gschier/.local/bin/zed --new /home/gschier/Workspace/yaak >/dev/null 2>&1 &
+
+wait_for_app "dev.zed.Zed" 15
+focus_workspace 1

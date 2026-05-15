@@ -61,10 +61,11 @@ layout {
     // `draw-border-with-background`.
 
     focus-ring {
-        // Set by dms
+        // Set by dms theme
     }
 
     border {
+        off
         // Set by dms theme
     }
 
@@ -99,14 +100,14 @@ prefer-no-csd // No client-side decorations
 
 screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
 
-workspace "yaak"
+spawn-at-startup "/home/gschier/.local/bin/niri-login-setup"
 
 // Animation settings.
 // The wiki explains how to configure individual animations:
 // https://niri-wm.github.io/niri/Configuration:-Animations
 animations {
     // off
-    slowdown 0.7 // Faster
+    slowdown 0.8 // Faster
 }
 
 debug {
@@ -135,12 +136,6 @@ window-rule {
     default-column-width { fixed 647; }
 }
 
-// Keep Yaak on its named workspace.
-window-rule {
-    match app-id=r#"^yaak-app(-client)?$"#
-    open-on-workspace "yaak"
-}
-
 // Open Zed notification popups as floating instead of a full-height column.
 window-rule {
     match app-id=r#"^dev\.zed\.Zed$"#
@@ -154,6 +149,12 @@ window-rule {
 window-rule {
     geometry-corner-radius 8
     clip-to-geometry true
+}
+
+// Slightly dim inactive windows.
+window-rule {
+    match is-active=false
+    opacity 0.9
 }
 
 binds {
@@ -409,6 +410,20 @@ binds {
     // Powers off the monitors. To turn them back on, do any input like
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
+}
+
+recent-windows {
+    binds {
+        Alt+Tab         { next-window     scope="workspace"; }
+        Alt+Shift+Tab   { previous-window scope="workspace"; }
+        Alt+grave       { next-window     scope="workspace" filter="app-id"; }
+        Alt+Shift+grave { previous-window scope="workspace" filter="app-id"; }
+
+        Mod+Tab         { next-window     scope="workspace"; }
+        Mod+Shift+Tab   { previous-window scope="workspace"; }
+        Mod+grave       { next-window     scope="workspace" filter="app-id"; }
+        Mod+Shift+grave { previous-window scope="workspace" filter="app-id"; }
+    }
 }
 
 include "dms/cursor.kdl"

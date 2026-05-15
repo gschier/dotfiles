@@ -1,0 +1,52 @@
+#!/usr/bin/env sh
+
+# Fedora's /usr/bin/niri-session currently calls:
+#   systemctl --user import-environment
+# without arguments, which systemd warns about. Keep the same systemd-managed
+# session flow, but import the current environment with explicit variable names.
+
+import_user_environment() {
+    env \
+        | sed -n 's/^\([A-Za-z_][A-Za-z0-9_]*\)=.*/\1/p' \
+        | sort -u \
+        | xargs -r systemctl --user import-environment
+}
+
+if [ -n "${MANAGERPID:-}" ] && [ "${SYSTEMD_EXEC_PID:-}" = "$$" ]; then
+    case "$(ps -p "$MANAGERPID" -o cmd=)" in
+    *systemd*--user*)
+        exec niri --session
+        ;;
+    esac
+fi
+
+if [ -n "$SHELL" ] &&
+   grep -q "$SHELL" /etc/shells &&
+   ! (echo "$SHELL" | grep -q "false") &&
+   ! (echo "$SHELL" | grep -q "nologin"); then
+    if [ "$1" != "-l" ]; then
+        exec bash -c "exec -l '$SHELL' -c '$0 -l $*'"
+    else
+        shift
+    fi
+fi
+
+if hash systemctl >/dev/null 2>&1; then
+    if systemctl --user -q is-active niri.service; then
+        echo "A niri session is already running."
+        exit 1
+    fi
+
+    systemctl --user reset-failed
+    import_user_environment
+
+    if hash dbus-update-activation-environment 2>/dev/null; then
+        dbus-update-activation-environment --all
+    fi
+
+    systemctl --user --wait start niri.service
+    systemctl --user start --job-mode=replace-irreversibly niri-shutdown.target
+    systemctl --user unset-environment WAYLAND_DISPLAY DISPLAY XDG_SESSION_TYPE XDG_CURRENT_DESKTOP NIRI_SOCKET
+else
+    exec /usr/bin/niri-session "$@"
+fi

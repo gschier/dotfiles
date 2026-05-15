@@ -81,6 +81,37 @@ install_dms_plugin() {
 	fi
 }
 
+configure_boot_login_scale() {
+	echo "Configuring 2x boot unlock and login screen scale..."
+
+	sudo tee /etc/plymouth/plymouthd.conf >/dev/null <<'EOF'
+# Administrator customizations go in this file
+[Daemon]
+DeviceScale=2
+EOF
+
+	sudo tee /etc/vconsole.conf >/dev/null <<'EOF'
+KEYMAP="us-colemak"
+FONT="latarcyrheb-sun32"
+EOF
+
+	echo "Rebuilding initramfs for Plymouth scale changes..."
+	sudo dracut -f
+}
+
+configure_power_policy() {
+	echo "Configuring power policy..."
+
+	sudo mkdir -p /etc/systemd/logind.conf.d
+	sudo tee /etc/systemd/logind.conf.d/10-niri-power.conf >/dev/null <<'EOF'
+[Login]
+HandleLidSwitchExternalPower=ignore
+HandleLidSwitchDocked=ignore
+EOF
+
+	sudo systemctl reload systemd-logind
+}
+
 install_packer() {
 	local packer_dir="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
 
@@ -295,6 +326,7 @@ install_pkg gh
 install_pkg golang
 install_pkg google-noto-color-emoji-fonts
 install_pkg jq
+install_pkg kbd-misc
 install_pkg logiops
 install_pkg make
 install_pkg nautilus
@@ -341,10 +373,12 @@ sudo tee /etc/greetd/config.toml >/dev/null <<'EOF'
 [terminal]
 vt = 1
 [default_session]
-command = "tuigreet --time --remember --cmd niri-session"
+command = "tuigreet --time --remember --cmd /home/gschier/.local/bin/niri-session"
 user = "greetd"
 EOF
 sudo systemctl enable greetd
+configure_boot_login_scale
+configure_power_policy
 
 install_cmd vp \
 	bash -c 'curl -fsSL https://vite.plus | VP_NODE_MANAGER=yes bash'
