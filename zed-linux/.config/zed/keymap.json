@@ -60,12 +60,13 @@
   {
     "context": "AgentPanel",
     "bindings": {
-      "ctrl-?": "workspace::ToggleRightDock",
+      "ctrl-?": "agent::Toggle",
     },
   },
   {
     "context": "Workspace",
     "bindings": {
+      "ctrl-?": "agent::Toggle",
       "alt-shift-r": [
         "task::Spawn",
         {
