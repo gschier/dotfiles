@@ -3,6 +3,7 @@
 set -euo pipefail
 
 packages=(
+  alacritty
   dank-material-shell
   hypr
   niri

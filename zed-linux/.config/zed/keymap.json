@@ -10,6 +10,8 @@
   {
     "context": "Terminal",
     "bindings": {
+      "ctrl-insert": "terminal::Copy",
+      "shift-insert": "terminal::Paste",
       "ctrl-shift-r": "task::Rerun",
       "shift-enter": ["terminal::SendText", "\u001b\r"],
     },
@@ -42,6 +44,9 @@
   {
     "context": "Editor",
     "bindings": {
+      "ctrl-insert": "editor::Copy",
+      "shift-insert": "editor::Paste",
+      "ctrl-x": "editor::Cut",
       "ctrl-j": "editor::Hover",
     },
   },

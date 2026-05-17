@@ -324,6 +324,7 @@ mkdir -p ~/Workspace
 
 echo "Installing dependencies..."
 install_pkg_no_weak_deps niri
+install_pkg alacritty
 install_pkg greetd
 install_pkg tuigreet
 install_pkg gnome-keyring
