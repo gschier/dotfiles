@@ -124,8 +124,8 @@ install_packer() {
 }
 
 install_1password() {
-	if ! rpm -q 1password >/dev/null 2>&1; then
-		echo "Installing 1Password..."
+	if ! rpm -q 1password >/dev/null 2>&1 || ! rpm -q 1password-cli >/dev/null 2>&1; then
+		echo "Configuring 1Password repository..."
 		sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
 		sudo tee /etc/yum.repos.d/1password.repo >/dev/null <<'EOF'
 [1password]
@@ -136,9 +136,20 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey="https://downloads.1password.com/linux/keys/1password.asc"
 EOF
+	fi
+
+	if ! rpm -q 1password >/dev/null 2>&1; then
+		echo "Installing 1Password..."
 		sudo dnf install -y 1password
 	else
 		echo "Already installed 1Password"
+	fi
+
+	if ! rpm -q 1password-cli >/dev/null 2>&1; then
+		echo "Installing 1Password CLI..."
+		sudo dnf install -y 1password-cli
+	else
+		echo "Already installed 1Password CLI"
 	fi
 }
 
@@ -399,6 +410,8 @@ install_1password
 install_stripe
 install_tailscale
 install_asdbctl
+install_flatpak_app com.obsproject.Studio "OBS Studio"
+install_flatpak_app io.github.celluloid_player.Celluloid "Celluloid"
 install_flatpak_app org.gnome.World.PikaBackup "Pika Backup"
 install_flatpak_app org.telegram.desktop "Telegram Desktop"
 install_nautilus_launcher_override

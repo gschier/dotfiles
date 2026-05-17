@@ -15,7 +15,7 @@
   "cornerRadius": 5,
   "niriLayoutGapsOverride": 11,
   "niriLayoutRadiusOverride": 7,
-  "niriLayoutBorderSize": 1,
+  "niriLayoutBorderSize": 2,
   "hyprlandLayoutGapsOverride": -1,
   "hyprlandLayoutRadiusOverride": -1,
   "hyprlandLayoutBorderSize": -1,
@@ -84,11 +84,6 @@
   "privacyShowScreenShareIcon": false,
   "controlCenterWidgets": [
     {
-      "id": "plugin_studioBrightness",
-      "enabled": true,
-      "width": 100
-    },
-    {
       "id": "audioOutput",
       "enabled": true,
       "width": 50
@@ -109,7 +104,7 @@
       "width": 50
     },
     {
-      "id": "wifi",
+      "id": "plugin_studioBrightness",
       "enabled": true,
       "width": 50
     },
@@ -119,12 +114,27 @@
       "width": 50
     },
     {
-      "id": "darkMode",
+      "id": "wifi",
       "enabled": true,
       "width": 50
     },
     {
       "id": "bluetooth",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "plugin_nextEvent",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "darkMode",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "plugin_dankClight",
       "enabled": true,
       "width": 50
     }
@@ -274,13 +284,13 @@
   "acSuspendTimeout": 0,
   "acSuspendBehavior": 0,
   "acProfileName": "",
-  "batteryMonitorTimeout": 600,
-  "batteryLockTimeout": 300,
-  "batterySuspendTimeout": 0,
-  "batterySuspendBehavior": 0,
+  "batteryMonitorTimeout": 300,
+  "batteryLockTimeout": 0,
+  "batterySuspendTimeout": 1200,
+  "batterySuspendBehavior": 1,
   "batteryProfileName": "",
   "batteryChargeLimit": 100,
-  "lockBeforeSuspend": false,
+  "lockBeforeSuspend": true,
   "loginctlLockIntegration": true,
   "fadeToLockEnabled": true,
   "fadeToLockGracePeriod": 5,
@@ -403,10 +413,10 @@
     "poweroff",
     "lock",
     "suspend",
-    "restart"
+    "hibernate"
   ],
   "powerMenuDefaultAction": "lock",
-  "powerMenuGridLayout": true,
+  "powerMenuGridLayout": false,
   "customPowerActionLock": "",
   "customPowerActionLogout": "",
   "customPowerActionSuspend": "",
@@ -454,27 +464,38 @@
           "enabled": true
         },
         {
-          "id": "systemUpdate",
+          "id": "workspaceSwitcher",
           "enabled": true
         },
         {
-          "id": "workspaceSwitcher",
+          "id": "systemUpdate",
           "enabled": true
-        }
-      ],
-      "centerWidgets": [
+        },
         {
           "id": "focusedWindow",
           "enabled": true
         }
       ],
+      "centerWidgets": [],
       "rightWidgets": [
         {
           "id": "nextEvent",
           "enabled": true
         },
         {
+          "id": "dankPomodoroTimer",
+          "enabled": true
+        },
+        {
           "id": "weather",
+          "enabled": true
+        },
+        {
+          "id": "dockerManager",
+          "enabled": true
+        },
+        {
+          "id": "homeAssistantMonitor",
           "enabled": true
         },
         {
@@ -517,16 +538,16 @@
         }
       ],
       "spacing": 0,
-      "innerPadding": 4,
-      "bottomGap": -10,
+      "innerPadding": 2,
+      "bottomGap": -9,
       "transparency": 0,
-      "widgetTransparency": 0.61,
+      "widgetTransparency": 0.77,
       "squareCorners": true,
       "noBackground": false,
       "maximizeWidgetIcons": false,
       "maximizeWidgetText": false,
       "removeWidgetPadding": false,
-      "widgetPadding": 8,
+      "widgetPadding": 6,
       "gothCornersEnabled": false,
       "gothCornerRadiusOverride": false,
       "gothCornerRadiusValue": 12,
@@ -545,8 +566,8 @@
       "showOnWindowsOpen": false,
       "openOnOverview": false,
       "visible": true,
-      "popupGapsAuto": true,
-      "popupGapsManual": 4,
+      "popupGapsAuto": false,
+      "popupGapsManual": 0,
       "maximizeDetection": true,
       "scrollEnabled": true,
       "scrollXBehavior": "column",

@@ -39,5 +39,31 @@
     "enabled": true,
     "lookaheadDays": 1,
     "cacheMinutes": 5
+  },
+  "homeAssistantMonitor": {
+    "enabled": true,
+    "hassUrl": "https://home-assistant.taila714c.ts.net",
+    "hassTokenPath": "/home/gschier/.config/DankMaterialShell/secrets/home-assistant-token",
+    "hassToken": "",
+    "showAttributes": false,
+    "haRefreshCounter": 1,
+    "showButtonsOnStatusBar": true,
+    "pinnedEntities": [
+      "input_boolean.greg_s_office"
+    ]
+  },
+  "dankVault": {
+    "enabled": true,
+    "backend": "op"
+  },
+  "dockerManager": {
+    "enabled": true,
+    "groupByCompose": true
+  },
+  "dankPomodoroTimer": {
+    "enabled": true
+  },
+  "dankClight": {
+    "enabled": true
   }
 }

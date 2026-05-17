@@ -1,0 +1,5 @@
+// Open Celluloid media player as a floating window.
+window-rule {
+    match app-id="io.github.celluloid_player.Celluloid"
+    open-floating true
+}

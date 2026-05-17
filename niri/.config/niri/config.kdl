@@ -106,8 +106,6 @@ prefer-no-csd // No client-side decorations
 
 screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
 
-spawn-at-startup "/home/gschier/.local/bin/niri-login-setup"
-
 // Animation settings.
 // The wiki explains how to configure individual animations:
 // https://niri-wm.github.io/niri/Configuration:-Animations
@@ -202,8 +200,8 @@ binds {
     XF86Launch6 allow-when-locked=true { spawn "/home/gschier/.local/bin/display-brightness" "up" "10"; }
     XF86Launch5 allow-when-locked=true { spawn "/home/gschier/.local/bin/display-brightness" "down" "10"; }
 
-    MouseBack    { focus-workspace-up; }
-    MouseForward { focus-workspace-down; }
+    MouseBack    { focus-workspace-down; }
+    MouseForward { focus-workspace-up; }
     F13          { toggle-overview; }
     XF86Tools    { toggle-overview; }
 
@@ -260,6 +258,8 @@ binds {
 
     Mod+Page_Down      { focus-workspace-down; }
     Mod+Page_Up        { focus-workspace-up; }
+    Super+Down         { focus-workspace-down; }
+    Super+Up           { focus-workspace-up; }
     Mod+N              { focus-workspace-down; }
     Mod+E              { focus-workspace-up; }
     Mod+Ctrl+N         { move-column-to-workspace-down; }
