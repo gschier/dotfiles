@@ -278,6 +278,14 @@ install_system_dconf() {
 	sudo dconf update
 }
 
+install_system_sudoers() {
+	echo "Installing sudo defaults..."
+	visudo -cf "$repo_dir/system/etc/sudoers.d/10-pwfeedback"
+	sudo install -Dm440 \
+		"$repo_dir/system/etc/sudoers.d/10-pwfeedback" \
+		/etc/sudoers.d/10-pwfeedback
+}
+
 install_nautilus_launcher_override() {
 	local desktop_file="$HOME/.local/share/applications/org.gnome.Nautilus.desktop"
 
@@ -342,6 +350,12 @@ install_pkg kbd-misc
 install_pkg logiops
 install_pkg make
 install_pkg nautilus
+install_pkg sushi
+install_pkg gstreamer1-plugin-openh264
+install_pkg gstreamer1-plugins-ugly-free
+install_pkg gstreamer1-plugin-libav
+install_pkg gstreamer1-plugin-gtk4
+install_pkg gstreamer1-plugins-good-gtk
 install_pkg neovim
 install_pkg python3-dateutil
 install_pkg rofimoji
@@ -363,6 +377,7 @@ install_dms_plugin calculator
 echo "Linking dotfiles..."
 "$repo_dir/scripts/install"
 install_system_dconf
+install_system_sudoers
 
 echo "Installing logiops config..."
 sudo install -Dm644 "$repo_dir/system/etc/logid.cfg" /etc/logid.cfg

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+color_scheme="$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null || true)"
+
+case "$color_scheme" in
+	*prefer-dark*)
+		export GTK_THEME=Adwaita:dark
+		export ADW_DEBUG_COLOR_SCHEME=prefer-dark
+		;;
+	*)
+		export GTK_THEME=Adwaita
+		export ADW_DEBUG_COLOR_SCHEME=prefer-light
+		;;
+esac
+
+exec /usr/libexec/org.gnome.NautilusPreviewer "$@"

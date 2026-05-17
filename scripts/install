@@ -20,4 +20,23 @@ if ! command -v stow >/dev/null 2>&1; then
   exit 1
 fi
 
+remove_identical_stow_conflicts() {
+  local package="$1"
+  local path
+  local target
+
+  while IFS= read -r path; do
+    target="$HOME/${path#"$package"/}"
+
+    if [[ -e "$target" && ! -L "$target" && -f "$target" ]] && cmp -s "$path" "$target"; then
+      rm "$target"
+    fi
+  done < <(find "$package/.config/niri/dms" -type f -name '*.kdl' 2>/dev/null)
+}
+
+remove_identical_stow_conflicts niri
 stow --target="$HOME" "${packages[@]}"
+
+if command -v busctl >/dev/null 2>&1; then
+  busctl --user call org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus ReloadConfig >/dev/null 2>&1 || true
+fi

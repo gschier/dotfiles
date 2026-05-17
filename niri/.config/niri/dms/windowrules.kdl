@@ -3,3 +3,9 @@ window-rule {
     match app-id="io.github.celluloid_player.Celluloid"
     open-floating true
 }
+
+// Open Nautilus file previews as floating windows.
+window-rule {
+    match app-id="org.gnome.NautilusPreviewer"
+    open-floating true
+}

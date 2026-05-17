@@ -38,7 +38,8 @@
   "nextEvent": {
     "enabled": true,
     "lookaheadDays": 1,
-    "cacheMinutes": 5
+    "cacheMinutes": 5,
+    "lookaheadHours": 18
   },
   "homeAssistantMonitor": {
     "enabled": true,

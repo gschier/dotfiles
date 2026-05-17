@@ -29,6 +29,16 @@ TRANSIENT_NETWORK_ERRORS = (
 )
 
 
+def bool_config(value, default=False):
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return default
+    if isinstance(value, str):
+        return value.strip().lower() in ("1", "true", "yes", "on")
+    return bool(value)
+
+
 def emit(payload):
     print(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
 
@@ -47,8 +57,10 @@ def load_config():
                 plugin_settings = json.load(f).get("nextEvent", {})
             if plugin_settings.get("icsUrl"):
                 config["ics_url"] = plugin_settings["icsUrl"]
-            if plugin_settings.get("lookaheadDays") is not None:
-                config["lookahead_days"] = plugin_settings["lookaheadDays"]
+            if plugin_settings.get("lookaheadHours") is not None:
+                config["lookahead_hours"] = plugin_settings["lookaheadHours"]
+            if plugin_settings.get("includeAllDayEvents") is not None:
+                config["include_all_day_events"] = plugin_settings["includeAllDayEvents"]
             if plugin_settings.get("cacheMinutes") is not None:
                 config["cache_minutes"] = plugin_settings["cacheMinutes"]
         except Exception:
@@ -264,14 +276,17 @@ def main():
             emit({"ok": False, "error": "Set iCal URL in Next Event settings"})
             return
 
-        lookahead_days = int(config.get("lookahead_days", 30))
+        lookahead_hours = int(config.get("lookahead_hours", 24))
+        include_all_day_events = bool_config(config.get("include_all_day_events"), False)
         cache_minutes = int(config.get("cache_minutes", 10))
         now = datetime.now(tz.tzlocal())
-        until = now + timedelta(days=lookahead_days)
+        until = now + timedelta(hours=lookahead_hours)
         ics = fetch_calendar(url, cache_minutes)
 
         candidates = []
         for event in parse_events(ics):
+            if event.get("all_day") and not include_all_day_events:
+                continue
             for start, end in event_occurrences(event, now, until):
                 candidates.append((start, end, event))
 

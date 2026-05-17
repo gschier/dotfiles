@@ -8,8 +8,10 @@ PluginSettings {
     pluginId: "nextEvent"
 
     Component.onCompleted: {
-        if (root.loadValue("lookaheadDays", null) === null)
-            root.saveValue("lookaheadDays", 30)
+        if (root.loadValue("lookaheadHours", null) === null)
+            root.saveValue("lookaheadHours", 24)
+        if (root.loadValue("includeAllDayEvents", null) === null)
+            root.saveValue("includeAllDayEvents", false)
         if (root.loadValue("cacheMinutes", null) === null)
             root.saveValue("cacheMinutes", 10)
     }
@@ -39,12 +41,12 @@ PluginSettings {
     }
 
     SliderSetting {
-        settingKey: "lookaheadDays"
+        settingKey: "lookaheadHours"
         label: "Look ahead"
-        description: "How many days to search for the next event"
+        description: "How many hours to search for the next event"
         minimum: 1
-        maximum: 90
-        defaultValue: 30
+        maximum: 168
+        defaultValue: 24
     }
 
     SliderSetting {
@@ -54,5 +56,12 @@ PluginSettings {
         minimum: 1
         maximum: 60
         defaultValue: 10
+    }
+
+    ToggleSetting {
+        settingKey: "includeAllDayEvents"
+        label: "Include all-day events"
+        description: "Show events such as birthdays and holidays that span an entire day"
+        defaultValue: false
     }
 }
